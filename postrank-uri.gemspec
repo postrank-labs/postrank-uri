@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Ilya Grigorik"]
   s.email       = ["ilya@igvita.com"]
-  s.homepage    = "http://rubygems.org/gems/postrank-uri"
+  s.homepage    = "http://github.com/postrank-labs/postrank-uri"
   s.summary     = "URI normalization, c18n, escaping, and extraction"
   s.description = s.summary
 
