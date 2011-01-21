@@ -83,7 +83,7 @@ module PostRank
     end
 
     def extract_href(text, host = nil)
-      urls = {}
+      urls = []
       Nokogiri.HTML(text).search('a').each do |a|
         begin
           url = normalize(c18n(unescape(a.attr('href'))))
@@ -92,7 +92,7 @@ module PostRank
             url.host = host
           end
 
-          urls[url.to_s] = a.text
+          urls.push [url.to_s, a.text]
         rescue
           next
         end
