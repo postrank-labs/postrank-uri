@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "postrank-uri"
 
-  s.add_dependency "addressable"
+  s.add_dependency "addressable", ">= 2.2.3"
   s.add_dependency "domainatrix"
   s.add_dependency "nokogiri"
   s.add_development_dependency "rspec"
