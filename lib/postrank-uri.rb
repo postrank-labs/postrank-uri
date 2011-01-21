@@ -65,7 +65,9 @@ module PostRank
     URIREGEX[:unescape] = /((?:%[0-9a-fA-F]{2})+)/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
-    def self.extract(text)
+    module_function
+
+    def extract(text)
       return [] if !text
       urls = []
       text.to_s.scan(URIREGEX[:valid_url]) do |all, before, url, protocol, domain, path, query|
@@ -80,7 +82,7 @@ module PostRank
       urls.compact
     end
 
-    def self.extract_href(text, host = nil)
+    def extract_href(text, host = nil)
       urls = {}
       Nokogiri.HTML(text).search('a').each do |a|
         begin
@@ -98,23 +100,23 @@ module PostRank
       urls
     end
 
-    def self.escape(uri)
+    def escape(uri)
       uri.gsub(URIREGEX[:escape]) do
         '%' + $1.unpack('H2' * $1.size).join('%').upcase
       end.gsub(' ','%20')
     end
 
-    def self.unescape(uri)
+    def unescape(uri)
       uri.tr('+', ' ').gsub(URIREGEX[:unescape]) do
         [$1.delete('%')].pack('H*')
       end
     end
 
-    def self.clean(uri)
+    def clean(uri)
       normalize(c18n(unescape(uri))).to_s
     end
 
-    def self.normalize(uri)
+    def normalize(uri)
       u = parse(uri)
       u.path = u.path.squeeze('/')
       u.query = nil if u.query && u.query.empty?
@@ -122,7 +124,7 @@ module PostRank
       u
     end
 
-    def self.c18n(uri)
+    def c18n(uri)
       u = parse(uri)
 
       if q = u.query_values(:notation => :flat_array)
@@ -134,7 +136,7 @@ module PostRank
       u
     end
 
-    def self.parse(uri)
+    def parse(uri)
       return uri if uri.is_a? Addressable::URI
 
       uri = uri.index(URIREGEX[:protocol]) == 0 ? uri : "http://#{uri}"
