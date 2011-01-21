@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "addressable"
   s.add_dependency "domainatrix"
+  s.add_dependency "nokogiri"
   s.add_development_dependency "rspec"
 
   s.files         = `git ls-files`.split("\n")

@@ -181,6 +181,41 @@ describe PostRank::URI do
         e("http://www.youtube.com/watch?v=w_j4Lda25jA　　とんかつ定食").should == ["http://www.youtube.com/watch?v=w_j4Lda25jA"]
       end
     end
+
+  end
+
+  context "href extract" do
+    it "should extract links from html text" do
+      l = PostRank::URI.extract_href("<a href='google.com'>link to google</a> with text <a href='b.com'>stuff</a>")
+      l.keys.size.should == 2
+
+      l.keys.should include('http://google.com/')
+      l.keys.should include('http://b.com/')
+
+      l['http://google.com/'].should == 'link to google'
+      l['http://b.com/'].should == 'stuff'
+    end
+
+    it "should handle empty hrefs" do
+      lambda do
+        l = PostRank::URI.extract_href("<a>link to google</a> with text <a href=''>stuff</a>")
+        l.should be_empty
+      end.should_not raise_error
+    end
+
+    context "relative paths" do
+      it "should reject relative paths" do
+        l = PostRank::URI.extract_href("<a href='/stuff'>link to stuff</a>")
+        l.should be_empty
+      end
+
+      it "should resolve relative paths if host is provided" do
+        l = PostRank::URI.extract_href("<a href='/stuff'>link to stuff</a>", "igvita.com")
+
+        l.size.should == 1
+        l['http://igvita.com/stuff'].should == 'link to stuff'
+      end
+    end
   end
 
 end

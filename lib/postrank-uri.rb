@@ -2,6 +2,7 @@
 
 require 'addressable/uri'
 require 'domainatrix'
+require 'nokogiri'
 require 'yaml'
 
 module PostRank
@@ -77,6 +78,24 @@ module PostRank
       end
 
       urls.compact
+    end
+
+    def self.extract_href(text, host = nil)
+      urls = {}
+      Nokogiri.HTML(text).search('a').each do |a|
+        begin
+          url = normalize(c18n(unescape(a.attr('href'))))
+          if url.host.empty?
+            next if host.nil?
+            url.host = host
+          end
+
+          urls[url.to_s] = a.text
+        rescue
+          next
+        end
+      end
+      urls
     end
 
     def self.escape(uri)
