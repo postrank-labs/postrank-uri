@@ -1,0 +1,37 @@
+---
+:all:
+- utm_source    # Google Analytics: campaign source
+- utm_medium    # Google Analytics: campaign medium
+- utm_term      # Google Anlaytics: campaign term
+- utm_content   # Google Analytics: campaign content
+- utm_campaign  # Google Analytics: campaign name
+- sms_ss        # addthis.com tracker
+- awesm         # awe.sm tracker
+
+:hosts:
+  nytimes.com:
+  - partner
+  - emc
+  - _r
+  washingtonpost.com:
+  - nav
+  - wprss
+  cnn.com:
+  - eref
+  latimes.com:
+  - track
+  usatoday.com:
+  - csp
+  economist.com:
+  - fsrc
+  espn.go.com:
+  - campaign
+  - source
+  dw-world.de:
+  - maca
+  repubblica.it:
+  - rss
+  welt.de:
+  - wtmc
+  usatoday.com:
+  - csp
