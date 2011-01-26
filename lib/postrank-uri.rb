@@ -72,9 +72,9 @@ module PostRank
       urls = []
       text.to_s.scan(URIREGEX[:valid_url]) do |all, before, url, protocol, domain, path, query|
         begin
-          url = clean(url).to_s
+          url = clean(url)
           Domainatrix.parse(url)
-          urls.push url
+          urls.push url.to_s
         rescue NoMethodError
         end
       end
@@ -86,7 +86,7 @@ module PostRank
       urls = []
       Nokogiri.HTML(text).search('a').each do |a|
         begin
-          url = normalize(c18n(unescape(a.attr('href'))))
+          url = clean(a.attr('href'), false)
           if url.host.empty?
             next if host.nil?
             url.host = host
@@ -112,8 +112,9 @@ module PostRank
       end
     end
 
-    def clean(uri)
-      normalize(c18n(unescape(uri))).to_s
+    def clean(uri, string = true)
+      uri = normalize(c18n(unescape(uri)))
+      string ? uri.to_s : uri
     end
 
     def normalize(uri)
