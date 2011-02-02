@@ -2,6 +2,7 @@
 
 require 'addressable/uri'
 require 'domainatrix'
+require 'digest/md5'
 require 'nokogiri'
 require 'yaml'
 
@@ -115,6 +116,10 @@ module PostRank
     def clean(uri, string = true)
       uri = normalize(c18n(unescape(uri)))
       string ? uri.to_s : uri
+    end
+
+    def hash(uri)
+      Digest::MD5.hexdigest(clean(uri))
     end
 
     def normalize(uri)

@@ -117,7 +117,6 @@ describe PostRank::URI do
   end
 
   context "clean" do
-
     def c(uri)
       PostRank::URI.clean(uri)
     end
@@ -141,7 +140,20 @@ describe PostRank::URI do
         c(orig).should == clean
       end
     end
+  end
 
+  context "hash" do
+    def h(uri)
+      PostRank::URI.hash(uri)
+    end
+
+    it "should compute MD5 hash of the normalized URI" do
+      hash = '021a1032b1ea631a7c33d1a0ccc562bf'
+
+      h('http://EverBurnign.Com/feed/post/1').should == hash
+      h('Everburnign.com/feed/post/1').should == hash
+      h('everburnign.com/feed/post/1').should == hash
+    end
   end
 
   context "extract" do
