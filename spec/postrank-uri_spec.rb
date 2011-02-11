@@ -112,7 +112,13 @@ describe PostRank::URI do
         c('igvita.com/?id=a&utm_source=a&awesm=b').should == 'http://igvita.com/?id=a'
         c('igvita.com/?id=a&sms_ss=a').should == 'http://igvita.com/?id=a'
       end
+    end
 
+    context "embedded links" do
+      it "should extract embedded redirects from Google News" do
+        u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
+        u.should == 'http://www.ctv.ca/CTVNews/Politics/20110111/'
+      end
     end
   end
 

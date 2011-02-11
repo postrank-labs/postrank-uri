@@ -132,6 +132,7 @@ module PostRank
 
     def c18n(uri)
       u = parse(uri)
+      u = embedded(u)
 
       if q = u.query_values(:notation => :flat_array)
         q.delete_if { |k,v| C18N[:global].include?(k) }
@@ -140,6 +141,14 @@ module PostRank
 
       u.query_values = q
       u
+    end
+
+    def embedded(uri)
+      if uri.host == 'news.google.com' && uri.path == '/news/url'
+        embedded = uri.query_values['url']
+        uri = clean(embedded, false) if embedded
+      end
+      uri
     end
 
     def parse(uri)
