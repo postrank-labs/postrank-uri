@@ -114,6 +114,14 @@ describe PostRank::URI do
       end
     end
 
+    context "hashbang" do
+      it "should rewrite twitter links to crawlable versions" do
+        c('http://twitter.com/#!/igrigorik').should == 'http://twitter.com/igrigorik'
+        c('http://twitter.com/#!/a/statuses/1').should == 'http://twitter.com/a/statuses/1'
+        c('http://nontwitter.com/#!/a/statuses/1').should == 'http://nontwitter.com/#!/a/statuses/1'
+      end
+    end
+
     context "embedded links" do
       it "should extract embedded redirects from Google News" do
         u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
@@ -175,6 +183,10 @@ describe PostRank::URI do
       it "should not pickup bad TLDS" do
         e('stuff.zz a.b.c d.zq').should be_empty
       end
+    end
+
+    it "should extract twitter links with hashbangs" do
+      e('test http://twitter.com/#!/igrigorik').should include('http://twitter.com/igrigorik')
     end
 
     it "should handle a URL that comes after text without a space" do

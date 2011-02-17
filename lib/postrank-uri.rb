@@ -138,8 +138,13 @@ module PostRank
         q.delete_if { |k,v| C18N[:global].include?(k) }
         q.delete_if { |k,v| C18N[:hosts].find {|r,p| u.host =~ r && p.include?(k) } }
       end
-
       u.query_values = q
+
+      if u.host == 'twitter.com' && u.fragment.match(/!(.*)/)
+        u.fragment = nil
+        u.path = $1
+      end
+
       u
     end
 
