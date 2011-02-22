@@ -149,7 +149,9 @@ module PostRank
     end
 
     def embedded(uri)
-      if uri.host == 'news.google.com' && uri.path == '/news/url'
+      if uri.host == 'news.google.com' && uri.path == '/news/url' \
+         || uri.host == 'xfruits.com'
+
         embedded = uri.query_values['url']
         uri = clean(embedded, false) if embedded
       end

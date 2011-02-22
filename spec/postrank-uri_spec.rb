@@ -127,6 +127,11 @@ describe PostRank::URI do
         u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
         u.should == 'http://www.ctv.ca/CTVNews/Politics/20110111/'
       end
+
+      it "should extract embedded redirects from xfruits.com" do
+        u = c('http://xfruits.com/MrGroar/?url=http%3A%2F%2Faap.lesroyaumes.com%2Fdepeches%2Fdepeche351820908.html')
+        u.should == 'http://aap.lesroyaumes.com/depeches/depeche351820908.html'
+      end
     end
   end
 
