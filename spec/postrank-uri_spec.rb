@@ -132,6 +132,11 @@ describe PostRank::URI do
         u = c('http://xfruits.com/MrGroar/?url=http%3A%2F%2Faap.lesroyaumes.com%2Fdepeches%2Fdepeche351820908.html')
         u.should == 'http://aap.lesroyaumes.com/depeches/depeche351820908.html'
       end
+
+      it "should extract embedded redirects from MySpace" do
+        u = c('http://www.myspace.com/Modules/PostTo/Pages/?u=http%3A%2F%2Fghanaian-chronicle.com%2Fnews%2Fother-news%2Fcanadian-high-commissioner-urges-media%2F&t=Canadian%20High%20Commissioner%20urges%20media')
+        u.should == 'http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media/'
+      end
     end
   end
 
