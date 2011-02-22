@@ -140,7 +140,7 @@ module PostRank
       end
       u.query_values = q
 
-      if u.host == 'twitter.com' && u.fragment.match(/^!(.*)/)
+      if u.host == 'twitter.com' && u.fragment && u.fragment.match(/^!(.*)/)
         u.fragment = nil
         u.path = $1
       end
