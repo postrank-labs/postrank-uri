@@ -11,6 +11,7 @@
 :hosts:
   nytimes.com:
   - partner
+  - pagewanted
   - emc
   - _r
   - ref
