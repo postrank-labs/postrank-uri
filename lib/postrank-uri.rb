@@ -125,6 +125,7 @@ module PostRank
     def normalize(uri)
       u = parse(uri)
       u.path = u.path.squeeze('/')
+      u.path = u.path.chomp('/') if u.path.size != 1
       u.query = nil if u.query && u.query.empty?
       u.fragment = nil
       u

@@ -86,6 +86,16 @@ describe PostRank::URI do
       n('IGVITA.COM/ABC').should == (igvita + "ABC")
     end
 
+    it "should remove trailing slash on paths" do
+      n('http://igvita.com/').should == 'http://igvita.com/'
+
+      n('http://igvita.com/a').should == 'http://igvita.com/a'
+      n('http://igvita.com/a/').should == 'http://igvita.com/a'
+
+      n('http://igvita.com/a/b').should == 'http://igvita.com/a/b'
+      n('http://igvita.com/a/b/').should == 'http://igvita.com/a/b'
+    end
+
   end
 
   context "canonicalization" do
@@ -125,7 +135,7 @@ describe PostRank::URI do
     context "embedded links" do
       it "should extract embedded redirects from Google News" do
         u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
-        u.should == 'http://www.ctv.ca/CTVNews/Politics/20110111/'
+        u.should == 'http://www.ctv.ca/CTVNews/Politics/20110111'
       end
 
       it "should extract embedded redirects from xfruits.com" do
@@ -135,7 +145,7 @@ describe PostRank::URI do
 
       it "should extract embedded redirects from MySpace" do
         u = c('http://www.myspace.com/Modules/PostTo/Pages/?u=http%3A%2F%2Fghanaian-chronicle.com%2Fnews%2Fother-news%2Fcanadian-high-commissioner-urges-media%2F&t=Canadian%20High%20Commissioner%20urges%20media')
-        u.should == 'http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media/'
+        u.should == 'http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media'
       end
     end
   end
@@ -172,11 +182,12 @@ describe PostRank::URI do
     end
 
     it "should compute MD5 hash of the normalized URI" do
-      hash = '021a1032b1ea631a7c33d1a0ccc562bf'
+      hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://EverBurnign.Com/feed/post/1').should == hash
-      h('Everburnign.com/feed/post/1').should == hash
-      h('everburnign.com/feed/post/1').should == hash
+      h('http://EverBurning.Com/feed/post/1').should == hash
+      h('Everburning.com/feed/post/1').should == hash
+      h('everburning.com/feed/post/1').should == hash
+      h('everburning.com/feed/post/1/').should == hash
     end
   end
 
