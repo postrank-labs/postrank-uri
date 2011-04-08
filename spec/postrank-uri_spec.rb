@@ -177,8 +177,8 @@ describe PostRank::URI do
   end
 
   context "hash" do
-    def h(uri)
-      PostRank::URI.hash(uri)
+    def h(uri, opts = {})
+      PostRank::URI.hash(uri, opts)
     end
 
     it "should compute MD5 hash of the normalized URI" do
@@ -188,6 +188,13 @@ describe PostRank::URI do
       h('Everburning.com/feed/post/1').should == hash
       h('everburning.com/feed/post/1').should == hash
       h('everburning.com/feed/post/1/').should == hash
+    end
+
+    it "should not clean the URI if requested" do
+      hash = '55fae8910d312b7878a3201ed653b881'
+
+      h('http://everburning.com/feed/post/1', :skip_clean => true).should == hash
+      h('everburning.com/feed/post/1', :skip_clean => true).should_not == hash
     end
   end
 
@@ -286,7 +293,7 @@ describe PostRank::URI do
 
        url_list.each_pair do |url, expected_result|
          it "should extract #{expected_result.inspect} from #{url}" do
-            u = PostRank::URI.parse(url)
+            u = PostRank::URI.clean(url, :raw => true)
             u.domain.should == expected_result
          end
        end

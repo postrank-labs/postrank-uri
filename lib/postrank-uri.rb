@@ -102,7 +102,7 @@ module PostRank
       urls = []
       Nokogiri.HTML(text).search('a').each do |a|
         begin
-          url = clean(a.attr('href'), false)
+          url = clean(a.attr('href'), :raw => true)
           if url.host.empty?
             next if host.nil?
             url.host = host
@@ -128,13 +128,13 @@ module PostRank
       end
     end
 
-    def clean(uri, string = true)
+    def clean(uri, opts = {})
       uri = normalize(c18n(unescape(uri)))
-      string ? uri.to_s : uri
+      opts[:raw] ? uri : uri.to_s
     end
 
-    def hash(uri)
-      Digest::MD5.hexdigest(clean(uri))
+    def hash(uri, opts = {})
+      Digest::MD5.hexdigest(opts[:skip_clean] ? uri : clean(uri))
     end
 
     def normalize(uri)
@@ -173,7 +173,7 @@ module PostRank
         embedded = uri.query_values['u']
       end
 
-      uri = clean(embedded, false) if embedded
+      uri = clean(embedded, :raw => true) if embedded
       uri
     end
 
@@ -186,4 +186,3 @@ module PostRank
 
   end
 end
-
