@@ -6,6 +6,21 @@ require 'digest/md5'
 require 'nokogiri'
 require 'yaml'
 
+module Addressable
+  class URI
+    def domain
+      begin
+        dp = Domainatrix.parse(self)
+      rescue
+        return nil
+      end
+
+      dom = dp.public_suffix
+      dom = dp.domain.downcase + "." + dom unless dp.domain.empty?
+    end
+  end
+end
+
 module PostRank
   module URI
 
@@ -171,3 +186,4 @@ module PostRank
 
   end
 end
+
