@@ -281,30 +281,31 @@ describe PostRank::URI do
       end
     end
 
-    context 'domain extraction' do
-      url_list = {"http://alex.pages.example.com" => "example.com",
-                  "alex.pages.example.com" => "example.com",
-                  "http://example.com/2011/04/01/blah" => "example.com",
-                  "http://example.com" => "example.com",
-                  "example.com" => "example.com",
-                  "ExampLe.com" => "example.com",
-                  "ExampLe.com:3000" => "example.com",
-                  "http://alex.pages.example.COM" => "example.com",
-                  "http://www.example.ag.it/2011/04/01/blah" => "example.ag.it",
-                  "ftp://www.example.com/2011/04/01/blah" => nil,
-                  "http://com" => nil,
-                  "http://alex.pages.examplecom" => nil,
-                  "example" => nil,
-                  "http://127.0.0.1" => nil,
-                  "localhost" => nil
-                  }
+    context "domain extraction" do
+      url_list = {
+        "http://alex.pages.example.com" => "example.com",
+        "alex.pages.example.com" => "example.com",
+        "http://example.com/2011/04/01/blah" => "example.com",
+        "http://example.com" => "example.com",
+        "example.com" => "example.com",
+        "ExampLe.com" => "example.com",
+        "ExampLe.com:3000" => "example.com",
+        "http://alex.pages.example.COM" => "example.com",
+        "http://www.example.ag.it/2011/04/01/blah" => "example.ag.it",
+        "ftp://www.example.com/2011/04/01/blah" => nil,
+        "http://com" => nil,
+        "http://alex.pages.examplecom" => nil,
+        "example" => nil,
+        "http://127.0.0.1" => nil,
+        "localhost" => nil
+      }
 
-       url_list.each_pair do |url, expected_result|
-         it "should extract #{expected_result.inspect} from #{url}" do
-            u = PostRank::URI.clean(url, :raw => true)
-            u.domain.should == expected_result
-         end
-       end
+      url_list.each_pair do |url, expected_result|
+        it "should extract #{expected_result.inspect} from #{url}" do
+          u = PostRank::URI.clean(url, :raw => true)
+          u.domain.should == expected_result
+        end
+      end
     end
   end
 end
