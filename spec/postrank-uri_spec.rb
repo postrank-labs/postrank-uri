@@ -132,6 +132,12 @@ describe PostRank::URI do
       end
     end
 
+    context "tumblr" do
+      it "should strip slug" do
+        c('http://test.tumblr.com/post/4533459403/some-text').should == 'http://test.tumblr.com/post/4533459403/'
+      end
+    end
+
     context "embedded links" do
       it "should extract embedded redirects from Google News" do
         u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
@@ -167,6 +173,8 @@ describe PostRank::URI do
 
       c('igvita.com?id=<>').should == 'http://igvita.com/?id=%3C%3E'
       c('igvita.com?id="').should == 'http://igvita.com/?id=%22'
+
+      c('test.tumblr.com/post/23223/text-stub').should == 'http://test.tumblr.com/post/23223'
     end
 
     it "should clean host specific parameters" do
