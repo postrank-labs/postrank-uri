@@ -193,8 +193,8 @@ describe PostRank::URI do
     it "should not clean the URI if requested" do
       hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://everburning.com/feed/post/1', :skip_clean => true).should == hash
-      h('everburning.com/feed/post/1', :skip_clean => true).should_not == hash
+      h('http://everburning.com/feed/post/1', :clean => false).should == hash
+      h('everburning.com/feed/post/1', :clean => false).should_not == hash
     end
   end
 
