@@ -189,20 +189,20 @@ describe PostRank::URI do
       PostRank::URI.hash(uri, opts)
     end
 
-    it "should compute MD5 hash of the normalized URI" do
+    it "should compute the MD5 hash without cleaning the URI" do
       hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://EverBurning.Com/feed/post/1').should == hash
-      h('Everburning.com/feed/post/1').should == hash
-      h('everburning.com/feed/post/1').should == hash
-      h('everburning.com/feed/post/1/').should == hash
+      h('http://everburning.com/feed/post/1').should == hash
+      h('everburning.com/feed/post/1').should_not == hash
     end
 
-    it "should not clean the URI if requested" do
+    it "should normalize the URI if requested and compute MD5 hash" do
       hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://everburning.com/feed/post/1', :clean => false).should == hash
-      h('everburning.com/feed/post/1', :clean => false).should_not == hash
+      h('http://EverBurning.Com/feed/post/1', :clean => true).should == hash
+      h('Everburning.com/feed/post/1', :clean => true).should == hash
+      h('everburning.com/feed/post/1', :clean => true).should == hash
+      h('everburning.com/feed/post/1/', :clean => true).should == hash
     end
   end
 

@@ -134,7 +134,7 @@ module PostRank
     end
 
     def hash(uri, opts = {})
-      Digest::MD5.hexdigest(opts[:clean] == false ? uri : clean(uri))
+      Digest::MD5.hexdigest(opts[:clean] == true ? clean(uri) : uri)
     end
 
     def normalize(uri)
