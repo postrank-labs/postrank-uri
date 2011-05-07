@@ -161,7 +161,7 @@ module PostRank
         u.path = $1
       end
 
-      if u.host =~ /tumblr\.com$/
+      if u.host =~ /tumblr\.com$/ && u.path =~ /\/post\/\d+\//
         u.path = u.path.gsub(/[^\/]+$/, '')
       end
 

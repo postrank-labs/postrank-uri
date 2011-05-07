@@ -135,6 +135,7 @@ describe PostRank::URI do
     context "tumblr" do
       it "should strip slug" do
         c('http://test.tumblr.com/post/4533459403/some-text').should == 'http://test.tumblr.com/post/4533459403/'
+        c('http://tumblr.com/xjl2evo3hh').should == 'http://tumblr.com/xjl2evo3hh'
       end
     end
 
