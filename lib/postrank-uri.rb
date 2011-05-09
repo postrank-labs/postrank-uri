@@ -102,11 +102,9 @@ module PostRank
       urls = []
       Nokogiri.HTML(text).search('a').each do |a|
         begin
-          url = clean(a.attr('href'), :raw => true)
-          if url.host.empty?
-            next if host.nil?
-            url.host = host
-          end
+          url = clean(a.attr('href'), :raw => true, :host => host)
+
+          next unless url.absolute?
 
           urls.push [url.to_s, a.text]
         rescue
@@ -129,7 +127,7 @@ module PostRank
     end
 
     def clean(uri, opts = {})
-      uri = normalize(c18n(unescape(uri)))
+      uri = normalize(c18n(unescape(uri), opts))
       opts[:raw] ? uri : uri.to_s
     end
 
@@ -137,8 +135,8 @@ module PostRank
       Digest::MD5.hexdigest(opts[:clean] == true ? clean(uri) : uri)
     end
 
-    def normalize(uri)
-      u = parse(uri)
+    def normalize(uri, opts = {})
+      u = parse(uri, opts)
       u.path = u.path.squeeze('/')
       u.path = u.path.chomp('/') if u.path.size != 1
       u.query = nil if u.query && u.query.empty?
@@ -146,8 +144,8 @@ module PostRank
       u
     end
 
-    def c18n(uri)
-      u = parse(uri)
+    def c18n(uri, opts = {})
+      u = parse(uri, opts)
       u = embedded(u)
 
       if q = u.query_values(:notation => :flat_array)
@@ -181,12 +179,34 @@ module PostRank
       uri
     end
 
-    def parse(uri)
+    def parse(uri, opts = {})
       return uri if uri.is_a? Addressable::URI
 
-      uri = uri.index(URIREGEX[:protocol]) == 0 ? uri : "http://#{uri}"
-      Addressable::URI.parse(uri).normalize
+      uri = Addressable::URI.parse(uri)
+
+      unless uri.host
+        if uri.scheme
+          # With no host and scheme yes, the parser exploded
+          return parse("http://#{uri}", opts)
+        end
+
+        if opts[:host]
+          uri.host = opts[:host]
+        else
+          parts = uri.path.to_s.split(/[\/:]/)
+          if parts.first =~ URIREGEX[:valid_domain]
+            host = parts.shift
+            uri.path = '/' + parts.join('/')
+            uri.host = host
+          end
+        end
+      end
+
+      uri.scheme = 'http' if uri.host && !uri.scheme
+
+      uri.normalize
     end
 
   end
 end
+

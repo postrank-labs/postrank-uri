@@ -293,7 +293,7 @@ describe PostRank::URI do
         "ExampLe.com:3000" => "example.com",
         "http://alex.pages.example.COM" => "example.com",
         "http://www.example.ag.it/2011/04/01/blah" => "example.ag.it",
-        "ftp://www.example.com/2011/04/01/blah" => nil,
+        "ftp://www.example.com/2011/04/01/blah" => 'example.com',
         "http://com" => nil,
         "http://alex.pages.examplecom" => nil,
         "example" => nil,
