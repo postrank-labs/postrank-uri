@@ -243,6 +243,11 @@ describe PostRank::URI do
       u.should include('http://abc.co/')
     end
 
+    it "should pickup urls inside tags" do
+      u = e("<a href='http://bit.ly/3fds3'>abc.com</a>")
+      u.should include('http://abc.com/')
+    end
+
     context "multibyte characters" do
       it "should stop extracting URLs at the full-width CJK space character" do
         e("http://www.youtube.com/watch?v=w_j4Lda25jA　　とんかつ定食").should == ["http://www.youtube.com/watch?v=w_j4Lda25jA"]
