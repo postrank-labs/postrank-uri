@@ -18,6 +18,22 @@ module Addressable
       dom = dp.public_suffix
       dom = dp.domain.downcase + "." + dom unless dp.domain.empty?
     end
+
+    def normalized_query
+      @normalized_query ||= (begin
+        if self.query && self.query.strip != ''
+          (self.query.strip.split("&", -1).map do |pair|
+            Addressable::URI.normalize_component(
+              pair,
+              Addressable::URI::CharacterClasses::QUERY.sub("\\&", "")
+            )
+          end).join("&")
+        else
+          nil
+        end
+      end)
+    end
+
   end
 end
 
@@ -203,8 +219,7 @@ module PostRank
       end
 
       uri.scheme = 'http' if uri.host && !uri.scheme
-
-      uri.normalize
+      uri.normalize!
     end
 
   end
