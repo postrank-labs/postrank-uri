@@ -33,7 +33,7 @@ module PostRank
     URIREGEX = {}
     URIREGEX[:protocol] = /https?:\/\//i
     URIREGEX[:valid_preceding_chars] = /(?:|\.|[^-\/"':!=A-Z0-9_@＠]|^|\:)/i
-    URIREGEX[:valid_domain] = /(?:[^[:punct:]\s][\.-](?=[^[:punct:]\s])|[^[:punct:]\s]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
+    URIREGEX[:valid_domain] = /(?:[[:alnum:]][\.-](?=[[:alnum:]])|[[:alnum:]]){1,}\.[a-z]{2,}(?::[0-9]+)?/i
     URIREGEX[:valid_general_url_path_chars] = /[a-z0-9!\*';:=\+\,\$\/%#\[\]\-_~]/i
 
     # Allow URL paths to contain balanced parens
