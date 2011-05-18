@@ -303,7 +303,8 @@ describe PostRank::URI do
         "http://alex.pages.examplecom" => nil,
         "example" => nil,
         "http://127.0.0.1" => nil,
-        "localhost" => nil
+        "localhost" => nil,
+        "hello-there.com/you" => "hello-there.com"
       }
 
       url_list.each_pair do |url, expected_result|
@@ -312,6 +313,12 @@ describe PostRank::URI do
           u.domain.should == expected_result
         end
       end
+    end
+  end
+
+  context "parse" do
+    it 'should not fail on large host-part look-alikes' do
+      PostRank::URI.parse('a'*64+'.ca').host.should == nil
     end
   end
 end
