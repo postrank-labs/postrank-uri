@@ -320,5 +320,17 @@ describe PostRank::URI do
     it 'should not fail on large host-part look-alikes' do
       PostRank::URI.parse('a'*64+'.ca').host.should == nil
     end
+
+    it 'should not pancake javascript scheme URIs' do
+      PostRank::URI.parse('javascript:void(0);').scheme.should == 'javascript'
+    end
+
+    it 'should not pancake mailto scheme URIs' do
+      PostRank::URI.parse('mailto:void(0);').scheme.should == 'mailto'
+    end
+
+    it 'should not pancake xmpp scheme URIs' do
+      PostRank::URI.parse('xmpp:void(0);').scheme.should == 'xmpp'
+    end
   end
 end

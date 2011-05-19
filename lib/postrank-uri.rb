@@ -200,7 +200,7 @@ module PostRank
 
       uri = Addressable::URI.parse(uri)
 
-      unless uri.host
+      if !uri.host && uri.scheme !~ /^javascript|mailto|xmpp$/
         if uri.scheme
           # With no host and scheme yes, the parser exploded
           return parse("http://#{uri}", opts)
