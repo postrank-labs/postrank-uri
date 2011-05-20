@@ -333,4 +333,14 @@ describe PostRank::URI do
       PostRank::URI.parse('xmpp:void(0);').scheme.should == 'xmpp'
     end
   end
+
+  context 'valid?' do
+    it 'marks www.test.c as invalid' do
+      PostRank::URI.valid?('http://www.test.c').should be_false
+    end
+
+    it 'marks www.test.com as valid' do
+      PostRank::URI.valid?('http://www.test.com').should be_true
+    end
+  end
 end

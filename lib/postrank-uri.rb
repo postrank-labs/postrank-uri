@@ -222,6 +222,12 @@ module PostRank
       uri.normalize!
     end
 
+    def valid?(uri)
+      Domainatrix.parse(uri)
+      true
+    rescue
+      false
+    end
   end
 end
 
