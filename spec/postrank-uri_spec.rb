@@ -226,6 +226,10 @@ describe PostRank::URI do
       e('test http://twitter.com/#!/igrigorik').should include('http://twitter.com/igrigorik')
     end
 
+    it "should extract mobile twitter links with hashbangs" do
+      e('test http://mobile.twitter.com/#!/_mm6').should include('http://mobile.twitter.com/_mm6')
+    end
+
     it "should handle a URL that comes after text without a space" do
       e("text:http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
       e("text;http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
