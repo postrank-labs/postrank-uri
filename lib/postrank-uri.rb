@@ -164,7 +164,7 @@ module PostRank
       u = parse(uri, opts)
       u = embedded(u)
 
-      if q = u.query_values(:notation => :flat_array)
+      if q = u.query_values(Array)
         q.delete_if { |k,v| C18N[:global].include?(k) }
         q.delete_if { |k,v| C18N[:hosts].find {|r,p| u.host =~ r && p.include?(k) } }
       end
@@ -230,4 +230,3 @@ module PostRank
     end
   end
 end
-
