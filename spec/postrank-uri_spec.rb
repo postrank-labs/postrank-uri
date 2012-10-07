@@ -339,6 +339,10 @@ describe PostRank::URI do
   end
 
   context 'valid?' do
+    it 'marks incomplete URI string as invalid' do
+      PostRank::URI.valid?('/path/page.html').should be_false
+    end
+
     it 'marks www.test.c as invalid' do
       PostRank::URI.valid?('http://www.test.c').should be_false
     end
