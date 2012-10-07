@@ -216,8 +216,18 @@ module PostRank
     end
 
     def valid?(uri)
+      # URI is only valid if it is not nil, parses cleanly as a URI,
+      # and the domain has a recognized, valid TLD component
+      return false if uri.nil?
+
+      is_valid = false
       cleaned_uri = clean(uri, :raw => true)
-      cleaned_uri && cleaned_uri.host && PublicSuffix.valid?(cleaned_uri.host)
+
+      if host = cleaned_uri.host
+        is_valid = PublicSuffix.valid?(host)
+      end
+
+      is_valid
     end
   end
 end
