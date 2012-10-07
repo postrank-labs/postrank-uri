@@ -1,22 +1,16 @@
 # -*- encoding: utf-8 -*-
 
 require 'addressable/uri'
-require 'domainatrix'
 require 'digest/md5'
 require 'nokogiri'
+require 'public_suffix'
 require 'yaml'
 
 module Addressable
   class URI
     def domain
-      begin
-        dp = Domainatrix.parse(self)
-      rescue
-        return nil
-      end
-
-      dom = dp.public_suffix
-      dom = dp.domain.downcase + "." + dom unless dp.domain.empty?
+      host = self.host
+      (host && PublicSuffix.valid?(host)) ? PublicSuffix.parse(host).domain : nil
     end
 
     def normalized_query
@@ -103,11 +97,10 @@ module PostRank
       return [] if !text
       urls = []
       text.to_s.scan(URIREGEX[:valid_url]) do |all, before, url, protocol, domain, path, query|
-        begin
+        # Only extract the URL if the domain is valid
+        if PublicSuffix.valid?(domain)
           url = clean(url)
-          Domainatrix.parse(url)
           urls.push url.to_s
-        rescue NoMethodError
         end
       end
 
@@ -223,10 +216,8 @@ module PostRank
     end
 
     def valid?(uri)
-      Domainatrix.parse(uri)
-      true
-    rescue
-      false
+      cleaned_uri = clean(uri, :raw => true)
+      cleaned_uri && cleaned_uri.host && PublicSuffix.valid?(cleaned_uri.host)
     end
   end
 end
