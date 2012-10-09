@@ -7,6 +7,7 @@
 - utm_campaign  # Google Analytics: campaign name
 - sms_ss        # addthis.com tracker
 - awesm         # awe.sm tracker
+- xtor          # AT Internet tracker
 
 :hosts:
   nytimes.com:
