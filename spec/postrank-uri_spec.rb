@@ -350,5 +350,13 @@ describe PostRank::URI do
     it 'marks www.test.com as valid' do
       PostRank::URI.valid?('http://www.test.com').should be_true
     end
+
+    it 'marks Unicode domain as valid (NOTE: works only with a scheme)' do
+      PostRank::URI.valid?('http://президент.рф').should be_true
+    end
+
+    it 'marks punycode domain domain as valid' do
+      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be_true
+    end
   end
 end

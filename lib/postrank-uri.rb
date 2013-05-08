@@ -224,7 +224,7 @@ module PostRank
       cleaned_uri = clean(uri, :raw => true)
 
       if host = cleaned_uri.host
-        is_valid = PublicSuffix.valid?(host)
+        is_valid = PublicSuffix.valid?(Addressable::IDNA.to_unicode(host))
       end
 
       is_valid
