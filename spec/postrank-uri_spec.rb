@@ -122,6 +122,12 @@ describe PostRank::URI do
         c('igvita.com/?id=a&utm_source=a&awesm=b').should == 'http://igvita.com/?id=a'
         c('igvita.com/?id=a&sms_ss=a').should == 'http://igvita.com/?id=a'
       end
+
+      it "should remove PHPSESSID parameter" do
+        c('http://www.nachi.org/forum?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?'
+        c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum/?'
+        c('http://www.nachi.org/forum?id=123&PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?id=123'
+      end
     end
 
     context "hashbang" do
