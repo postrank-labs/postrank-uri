@@ -8,6 +8,7 @@
 - sms_ss        # addthis.com tracker
 - awesm         # awe.sm tracker
 - xtor          # AT Internet tracker
+- PHPSESSID     # Legacy PHP session identifier
 
 :hosts:
   nytimes.com:
