@@ -130,7 +130,9 @@ module PostRank
     end
 
     def unescape(uri)
-      uri.tr('+', ' ').gsub(URIREGEX[:unescape]) do
+      u = parse(uri)
+      u.query = u.query.tr('+', ' ') if u.query
+      u.to_s.gsub(URIREGEX[:unescape]) do
         [$1.delete('%')].pack('H*')
       end
     end

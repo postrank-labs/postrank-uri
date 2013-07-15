@@ -29,15 +29,19 @@ describe PostRank::URI do
       # See http://tools.ietf.org/html/rfc3986#section-2.3
 
       it "should unescape PostRank::URI with spaces encoded as '+'" do
-        PostRank::URI.unescape('id=+1').should == 'id= 1'
+        PostRank::URI.unescape('?id=+1').should == '?id= 1'
       end
 
       it "should unescape PostRank::URI with spaces encoded as '+'" do
-        PostRank::URI.unescape('id%3D+1').should == 'id= 1'
+        PostRank::URI.unescape('?id%3D+1').should == '?id= 1'
       end
 
       it "should unescape PostRank::URI with spaces encoded as %20" do
-        PostRank::URI.unescape('id=%201').should == 'id= 1'
+        PostRank::URI.unescape('?id=%201').should == '?id= 1'
+      end
+
+      it "should not unescape '+' to spaces in paths" do
+        PostRank::URI.unescape('/foo+bar?id=foo+bar').should == '/foo+bar?id=foo bar'
       end
     end
 
