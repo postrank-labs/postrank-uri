@@ -104,7 +104,7 @@ describe PostRank::URI do
 
   context "canonicalization" do
     def c(uri)
-      PostRank::URI.c18n(uri).to_s
+      PostRank::URI.c14n(uri).to_s
     end
 
     context "query parameters" do
@@ -172,7 +172,7 @@ describe PostRank::URI do
       PostRank::URI.clean(uri)
     end
 
-    it "should unescape, c18n and normalize" do
+    it "should unescape, c14n and normalize" do
       c('http://igvita.com/?id=1').should == 'http://igvita.com/?id=1'
       c('igvita.com/?id=1').should == 'http://igvita.com/?id=1'
 
@@ -189,7 +189,7 @@ describe PostRank::URI do
     end
 
     it "should clean host specific parameters" do
-      YAML.load_file('spec/c18n_hosts.yml').each do |orig, clean|
+      YAML.load_file('spec/c14n_hosts.yml').each do |orig, clean|
         c(orig).should == clean
       end
     end

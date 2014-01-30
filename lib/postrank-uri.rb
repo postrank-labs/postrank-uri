@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 
 require 'addressable/uri'
 require 'digest/md5'
@@ -34,11 +33,11 @@ end
 module PostRank
   module URI
 
-    c18ndb = YAML.load_file(File.dirname(__FILE__) + '/postrank-uri/c18n.yml')
+    c14ndb = YAML.load_file(File.dirname(__FILE__) + '/postrank-uri/c14n.yml')
 
-    C18N = {}
-    C18N[:global] = c18ndb[:all].freeze
-    C18N[:hosts]  = c18ndb[:hosts].inject({}) {|h,(k,v)| h[/#{Regexp.escape(k)}$/.freeze] = v; h}
+    C14N = {}
+    C14N[:global] = c14ndb[:all].freeze
+    C14N[:hosts]  = c14ndb[:hosts].inject({}) {|h,(k,v)| h[/#{Regexp.escape(k)}$/.freeze] = v; h}
 
     URIREGEX = {}
     URIREGEX[:protocol] = /https?:\/\//i
@@ -138,7 +137,7 @@ module PostRank
     end
 
     def clean(uri, opts = {})
-      uri = normalize(c18n(unescape(uri), opts))
+      uri = normalize(c14n(unescape(uri), opts))
       opts[:raw] ? uri : uri.to_s
     end
 
@@ -155,13 +154,13 @@ module PostRank
       u
     end
 
-    def c18n(uri, opts = {})
+    def c14n(uri, opts = {})
       u = parse(uri, opts)
       u = embedded(u)
 
       if q = u.query_values(Array)
-        q.delete_if { |k,v| C18N[:global].include?(k) }
-        q.delete_if { |k,v| C18N[:hosts].find {|r,p| u.host =~ r && p.include?(k) } }
+        q.delete_if { |k,v| C14N[:global].include?(k) }
+        q.delete_if { |k,v| C14N[:hosts].find {|r,p| u.host =~ r && p.include?(k) } }
       end
       u.query_values = q
 

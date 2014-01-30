@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Ilya Grigorik"]
   s.email       = ["ilya@igvita.com"]
   s.homepage    = "http://github.com/postrank-labs/postrank-uri"
-  s.summary     = "URI normalization, c18n, escaping, and extraction"
+  s.summary     = "URI normalization, c14n, escaping, and extraction"
   s.description = s.summary
 
   s.rubyforge_project = "postrank-uri"
