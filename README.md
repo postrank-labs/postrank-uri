@@ -14,7 +14,7 @@ In a nutshell, we need to make sure that creative cases like the ones below all 
 ## API
 
 - **PostRank::URI.extract(text)** - Detect URIs in text, discard bad TLD's
-- **PostRank::URI.clean(uri)** - Unescape, normalize, apply c18n filters - 95% use case.
+- **PostRank::URI.clean(uri)** - Unescape, normalize, apply c14n filters - 95% use case.
 
 - **PostRank::URI.normalize(uri)** - Apply RFC normalization rules, discard extra path characters, drop anchors
 - **PostRank::URI.unescape(uri)** - Unescape URI entities, handle +/%20's, etc
@@ -33,8 +33,8 @@ In a nutshell, we need to make sure that creative cases like the ones below all 
         [0] "http://link.to/?a=b"
     ]
 
-## C18N
+## C14N
 
-As part of URI canonicalization the library will remove common tracking parameters from Google Analytics and several other providers. Beyond that, host-specific rules are also applied. For example, nytimes.com likes to add a 'partner' query parameter for tracking purposes, but which has no effect on the content - hence, it is removed from the URI. For full list, see the c18n.yml file.
+As part of URI canonicalization the library will remove common tracking parameters from Google Analytics and several other providers. Beyond that, host-specific rules are also applied. For example, nytimes.com likes to add a 'partner' query parameter for tracking purposes, but which has no effect on the content - hence, it is removed from the URI. For full list, see the c14n.yml file.
 
 Detecting "duplicate URLs" is a hard problem to solve (expensive in all senses), instead we are compiling a manually assembled database. If you find cases which are missing, please do report them, or send us a pull request!
