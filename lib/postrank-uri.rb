@@ -137,7 +137,7 @@ module PostRank
     end
 
     def clean(uri, opts = {})
-      uri = normalize(c14n(unescape(uri), opts))
+      uri = normalize(c14n(unescape(uri), opts), opts)
       opts[:raw] ? uri : uri.to_s
     end
 

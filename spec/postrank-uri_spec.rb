@@ -178,8 +178,8 @@ describe PostRank::URI do
   end
 
   context "clean" do
-    def c(uri)
-      PostRank::URI.clean(uri)
+    def c(uri, opts = { })
+      PostRank::URI.clean(uri, opts)
     end
 
     it "should unescape, c14n and normalize" do
@@ -196,6 +196,11 @@ describe PostRank::URI do
       c('igvita.com?id="').should == 'http://igvita.com/?id=%22'
 
       c('test.tumblr.com/post/23223/text-stub').should == 'http://test.tumblr.com/post/23223'
+    end
+
+    it "should remove trailing slashes, unless asked not to" do
+      c('http://igvita.com/foo/').should == 'http://igvita.com/foo'
+      c('http://igvita.com/foo/', :remove_trailing_slash => false).should == 'http://igvita.com/foo/'
     end
 
     it "should clean host specific parameters" do
