@@ -48,8 +48,8 @@ describe PostRank::URI do
   end
 
   context "normalize" do
-    def n(uri)
-      PostRank::URI.normalize(uri).to_s
+    def n(uri, opts = {})
+      PostRank::URI.normalize(uri, opts).to_s
     end
 
     it "should normalize paths in PostRank::URIs" do
@@ -98,6 +98,16 @@ describe PostRank::URI do
 
       n('http://igvita.com/a/b').should == 'http://igvita.com/a/b'
       n('http://igvita.com/a/b/').should == 'http://igvita.com/a/b'
+    end
+
+    it "should not remove trailing slash on paths if asked not to" do
+      n('http://igvita.com/', :remove_trailing_slash => false).should == 'http://igvita.com/'
+
+      n('http://igvita.com/a', :remove_trailing_slash => false).should == 'http://igvita.com/a'
+      n('http://igvita.com/a/', :remove_trailing_slash => false).should == 'http://igvita.com/a/'
+
+      n('http://igvita.com/a/b', :remove_trailing_slash => false).should == 'http://igvita.com/a/b'
+      n('http://igvita.com/a/b/', :remove_trailing_slash => false).should == 'http://igvita.com/a/b/'
     end
 
   end
