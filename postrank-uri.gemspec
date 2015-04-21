@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/postrank-labs/postrank-uri"
   s.summary     = "URI normalization, c14n, escaping, and extraction"
   s.description = s.summary
+  s.license     = 'MIT'
 
   s.rubyforge_project = "postrank-uri"
 
