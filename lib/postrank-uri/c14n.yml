@@ -11,7 +11,7 @@
 - PHPSESSID     # Legacy PHP session identifier
 
 :all_regex:
-- !ruby/regexp '/;?jsessionid=[^\?\&\#]+/i'
+- !ruby/regexp '/;?jsessionid=[^\?\&\#\/]+$/i'
 
 :hosts:
   nytimes.com:
