@@ -10,6 +10,9 @@
 - xtor          # AT Internet tracker
 - PHPSESSID     # Legacy PHP session identifier
 
+:all_regex:
+- !ruby/regexp '/;?jsessionid=[^\?\&\#]+/i'
+
 :hosts:
   nytimes.com:
   - partner

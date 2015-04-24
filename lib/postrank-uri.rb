@@ -37,6 +37,7 @@ module PostRank
 
     C14N = {}
     C14N[:global] = c14ndb[:all].freeze
+    C14N[:global_regex] = c14ndb[:all_regex].freeze
     C14N[:hosts]  = c14ndb[:hosts].inject({}) {|h,(k,v)| h[/#{Regexp.escape(k)}$/.freeze] = v; h}
 
     URIREGEX = {}
@@ -155,6 +156,9 @@ module PostRank
     end
 
     def c14n(uri, opts = {})
+      C14N[:global_regex].each do |rgx|
+        uri.gsub!(rgx, '')
+      end
       u = parse(uri, opts)
       u = embedded(u)
 

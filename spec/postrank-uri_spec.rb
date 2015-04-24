@@ -142,6 +142,13 @@ describe PostRank::URI do
         c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum/?'
         c('http://www.nachi.org/forum?id=123&PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?id=123'
       end
+
+      it "should remove jsessionid parameter" do
+        c('http://foo.org/bar/;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye').should == 'http://foo.org/bar/'
+        c('http://foo.org/bar/?baz=1;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye').should == 'http://foo.org/bar/?baz=1'
+        c('http://foo.org/bar/?baz=1;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye&foo=2').should == 'http://foo.org/bar/?baz=1&foo=2'
+        c('http://foo.org/bar/?baz=1&bar=3;JSESSIONID=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye&foo=2').should == 'http://foo.org/bar/?baz=1&bar=3&foo=2'
+      end
     end
 
     context "hashbang" do
