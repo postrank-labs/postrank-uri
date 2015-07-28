@@ -45,6 +45,11 @@ describe PostRank::URI do
       end
     end
 
+    it "should raise an error on invalid characters" do
+      expect do
+        PostRank::URI.unescape("http://www.example.com/foo%bar%acbaz")
+      end.to raise_error(Addressable::URI::InvalidURIError)
+    end
   end
 
   context "normalize" do
@@ -206,6 +211,12 @@ describe PostRank::URI do
     it "should remove trailing slashes, unless asked not to" do
       c('http://igvita.com/foo/').should == 'http://igvita.com/foo'
       c('http://igvita.com/foo/', :remove_trailing_slash => false).should == 'http://igvita.com/foo/'
+    end
+
+    it "should raise an error on invalid characters" do
+      expect do
+        PostRank::URI.clean("http://www.example.com/foo%bar%acbaz")
+      end.to raise_error(Addressable::URI::InvalidURIError)
     end
 
     it "should clean host specific parameters" do
