@@ -132,9 +132,14 @@ module PostRank
     def unescape(uri)
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
-      u.to_s.gsub(URIREGEX[:unescape]) do
+      str = u.to_s.gsub(URIREGEX[:unescape]) do
         [$1.delete('%')].pack('H*')
       end
+      str.force_encoding("UTF-8")
+      unless str.valid_encoding?
+        raise Addressable::URI::InvalidURIError, "URI contains invalid characters: '#{u}'"
+      end
+      str
     end
 
     def clean(uri, opts = {})
