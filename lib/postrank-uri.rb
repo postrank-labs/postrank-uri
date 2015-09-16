@@ -89,6 +89,7 @@ module PostRank
 
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
     URIREGEX[:unescape] = /((?:%[0-9a-fA-F]{2})+)/x
+    URIREGEX[:reserved] = /(%(?:21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D))/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
     module_function
@@ -142,8 +143,24 @@ module PostRank
       str
     end
 
+    def unescape_unreserved(uri)
+      u = parse(uri)
+      u.query = u.query.tr('+', ' ') if u.query
+      str = u.to_s.gsub(URIREGEX[:unescape]) do
+        code = $1
+        next code if code =~ URIREGEX[:reserved]
+
+        [code.delete('%')].pack('H*')
+      end
+      str.force_encoding("UTF-8")
+      unless str.valid_encoding?
+        raise Addressable::URI::InvalidURIError, "URI contains invalid characters: '#{u}'"
+      end
+      str
+    end
+
     def clean(uri, opts = {})
-      uri = normalize(c14n(unescape(uri), opts), opts)
+      uri = normalize(c14n(unescape_unreserved(uri), opts), opts)
       opts[:raw] ? uri : uri.to_s
     end
 
