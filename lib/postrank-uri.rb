@@ -4,6 +4,7 @@ require 'digest/md5'
 require 'nokogiri'
 require 'public_suffix'
 require 'yaml'
+require 'set'
 
 module Addressable
   class URI
@@ -32,6 +33,11 @@ end
 
 module PostRank
   module URI
+    # https://tools.ietf.org/html/rfc3986#section-2.2
+    RESERVED_CHARS = Set.new(%w(: / ? # [ ] @ ! $ & ' ( ) * + , ; = %)).freeze
+    ENCODED_RESERVED_CHARS = Set.new(RESERVED_CHARS.map do |c|
+      ('%' + c.unpack('H2').join.upcase).freeze
+    end).freeze
 
     c14ndb = YAML.load_file(File.dirname(__FILE__) + '/postrank-uri/c14n.yml')
 
@@ -142,8 +148,24 @@ module PostRank
       str
     end
 
+    def unescape_unreserved(uri)
+      u = parse(uri)
+      u.query = u.query.tr('+', ' ') if u.query
+      str = u.to_s.gsub(URIREGEX[:unescape]) do
+        code = $1
+        next code if ENCODED_RESERVED_CHARS.include?(code.upcase)
+
+        [code.delete('%')].pack('H*')
+      end
+      str.force_encoding("UTF-8")
+      unless str.valid_encoding?
+        raise Addressable::URI::InvalidURIError, "URI contains invalid characters: '#{u}'"
+      end
+      str
+    end
+
     def clean(uri, opts = {})
-      uri = normalize(c14n(unescape(uri), opts), opts)
+      uri = normalize(c14n(unescape_unreserved(uri), opts), opts)
       opts[:raw] ? uri : uri.to_s
     end
 
