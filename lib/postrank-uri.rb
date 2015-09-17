@@ -89,7 +89,7 @@ module PostRank
 
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
     URIREGEX[:unescape] = /((?:%[0-9a-fA-F]{2})+)/x
-    URIREGEX[:reserved] = /(%(?:21|23|24|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D))/x
+    URIREGEX[:reserved] = /(%(?:21|23|24|25|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D))/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
     module_function

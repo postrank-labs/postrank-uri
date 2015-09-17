@@ -61,8 +61,12 @@ describe PostRank::URI do
       uu("example.com/what%3F").should == "http://example.com/what%3F"
     end
 
-    it "should escape unreserved characters" do
+    it "should unescape unreserved characters" do
       uu("example.com/some%20thing").should == "http://example.com/some thing"
+    end
+
+    it "should not unescape percents" do
+      uu("example.com/work%20110%25").should == "http://example.com/work 110%25"
     end
   end
 
