@@ -4,6 +4,7 @@ require 'digest/md5'
 require 'nokogiri'
 require 'public_suffix'
 require 'yaml'
+require 'set'
 
 module Addressable
   class URI
@@ -32,6 +33,11 @@ end
 
 module PostRank
   module URI
+    # https://tools.ietf.org/html/rfc3986#section-2.2
+    RESERVED_CHARS = Set.new(%w(: / ? # [ ] @ ! $ & ' ( ) * + , ; = %)).freeze
+    ENCODED_RESERVED_CHARS = Set.new(RESERVED_CHARS.map do |c|
+      ('%' + c.unpack('H2').join.upcase).freeze
+    end).freeze
 
     c14ndb = YAML.load_file(File.dirname(__FILE__) + '/postrank-uri/c14n.yml')
 
@@ -89,7 +95,6 @@ module PostRank
 
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
     URIREGEX[:unescape] = /((?:%[0-9a-fA-F]{2})+)/x
-    URIREGEX[:reserved] = /(%(?:21|23|24|25|26|27|28|29|2A|2B|2C|2F|3A|3B|3D|3F|40|5B|5D))/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
     module_function
@@ -148,7 +153,7 @@ module PostRank
       u.query = u.query.tr('+', ' ') if u.query
       str = u.to_s.gsub(URIREGEX[:unescape]) do
         code = $1
-        next code if code =~ URIREGEX[:reserved]
+        next code if ENCODED_RESERVED_CHARS.include?(code.upcase)
 
         [code.delete('%')].pack('H*')
       end
