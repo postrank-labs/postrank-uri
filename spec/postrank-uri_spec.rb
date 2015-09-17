@@ -52,6 +52,24 @@ describe PostRank::URI do
     end
   end
 
+  context "unescape_unreserved" do
+    def uu(uri)
+      PostRank::URI.unescape_unreserved(uri).to_s
+    end
+
+    it "should not unescape reserved characters" do
+      uu("example.com/what%3F").should == "http://example.com/what%3F"
+    end
+
+    it "should unescape unreserved characters" do
+      uu("example.com/some%20thing").should == "http://example.com/some thing"
+    end
+
+    it "should not unescape percents" do
+      uu("example.com/work%20110%25").should == "http://example.com/work 110%25"
+    end
+  end
+
   context "normalize" do
     def n(uri, opts = {})
       PostRank::URI.normalize(uri, opts).to_s
@@ -206,6 +224,9 @@ describe PostRank::URI do
       c('igvita.com?id="').should == 'http://igvita.com/?id=%22'
 
       c('test.tumblr.com/post/23223/text-stub').should == 'http://test.tumblr.com/post/23223'
+
+      c('example.com/do_you_%23yolo%3F').should == 'http://example.com/do_you_%23yolo%3F'
+      c('example.com/search?q=%23fomo&limit=50#entry-1').should == 'http://example.com/search?q=%23fomo&limit=50'
     end
 
     it "should remove trailing slashes, unless asked not to" do
