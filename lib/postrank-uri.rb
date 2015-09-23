@@ -139,7 +139,7 @@ module PostRank
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
       str = u.to_s.gsub(URIREGEX[:unescape]) do
-        [$1.delete('%')].pack('H*')
+        [$1.delete('%')].pack('H*').force_encoding("UTF-8")
       end
       str.force_encoding("UTF-8")
       unless str.valid_encoding?
@@ -155,7 +155,7 @@ module PostRank
         code = $1
         next code if ENCODED_RESERVED_CHARS.include?(code.upcase)
 
-        [code.delete('%')].pack('H*')
+        [code.delete('%')].pack('H*').force_encoding("UTF-8")
       end
       str.force_encoding("UTF-8")
       unless str.valid_encoding?
