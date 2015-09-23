@@ -50,6 +50,11 @@ describe PostRank::URI do
         PostRank::URI.unescape("http://www.example.com/foo%bar%acbaz")
       end.to raise_error(Addressable::URI::InvalidURIError)
     end
+
+    it "should handle hex and utf-8 encoding in same url" do
+      uri = Addressable::URI.parse("%C2%A9_\u{00A1}")
+      PostRank::URI.unescape(uri).should == "©_¡"
+    end
   end
 
   context "unescape_unreserved" do
@@ -67,6 +72,11 @@ describe PostRank::URI do
 
     it "should not unescape percents" do
       uu("example.com/work%20110%25").should == "http://example.com/work 110%25"
+    end
+
+    it "should handle hex and utf-8 encoding in same url" do
+      uri = Addressable::URI.parse("http://example.com/%C2%A9_\u{00A1}")
+      uu(uri).should == "http://example.com/©_¡"
     end
   end
 
