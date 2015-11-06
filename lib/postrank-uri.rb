@@ -94,7 +94,7 @@ module PostRank
         }iox;
 
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
-    URIREGEX[:unescape] = /((?:%[0-9a-fA-F]{2})+)/x
+    URIREGEX[:unescape] = /%[0-9a-fA-F]{2}/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
     module_function
@@ -138,8 +138,8 @@ module PostRank
     def unescape(uri)
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
-      str = u.to_s.gsub(URIREGEX[:unescape]) do
-        [$1.delete('%')].pack('H*')
+      str = u.to_s.force_encoding("ASCII-8BIT").gsub(URIREGEX[:unescape]) do |code|
+        [code.delete('%')].pack('H*')
       end
       str.force_encoding("UTF-8")
       unless str.valid_encoding?
@@ -148,11 +148,12 @@ module PostRank
       str
     end
 
+    # This method will return a copy of the uri where everything expect the reserved characters has been unescaped and
+    # interpreted as UTF-8.
     def unescape_unreserved(uri)
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
-      str = u.to_s.gsub(URIREGEX[:unescape]) do
-        code = $1
+      str = u.to_s.force_encoding("ASCII-8BIT").gsub(URIREGEX[:unescape]) do |code|
         next code if ENCODED_RESERVED_CHARS.include?(code.upcase)
 
         [code.delete('%')].pack('H*')
