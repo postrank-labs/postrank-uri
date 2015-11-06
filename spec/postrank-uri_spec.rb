@@ -55,6 +55,16 @@ describe PostRank::URI do
       uri = Addressable::URI.parse("%C2%A9_\u{00A1}")
       PostRank::URI.unescape(uri).should == "©_¡"
     end
+
+    it "handles reserved chars next to unreserved and encoded chars" do
+      uri = Addressable::URI.parse("http://example.com/%7C%25")
+      PostRank::URI.unescape(uri).should == "http://example.com/|%"
+    end
+
+    it "doesn't break on fancy UTF-8 characters" do
+      uri = Addressable::URI.parse("http://example.com/someregulartext%25💀%25🍻%25")
+      PostRank::URI.unescape(uri).should == "http://example.com/someregulartext%💀%🍻%"
+    end
   end
 
   context "unescape_unreserved" do
@@ -77,6 +87,16 @@ describe PostRank::URI do
     it "should handle hex and utf-8 encoding in same url" do
       uri = Addressable::URI.parse("http://example.com/%C2%A9_\u{00A1}")
       uu(uri).should == "http://example.com/©_¡"
+    end
+
+    it "handles reserved chars next to unreserved and encoded chars" do
+      uri = Addressable::URI.parse("http://example.com/%7C%25")
+      uu(uri).should == "http://example.com/|%25"
+    end
+
+    it "doesn't break on fancy UTF-8 characters" do
+      uri = Addressable::URI.parse("http://example.com/someregulartext%25💀%25🍻%25")
+      uu(uri).should == "http://example.com/someregulartext%25💀%25🍻%25"
     end
   end
 
@@ -143,6 +163,13 @@ describe PostRank::URI do
       n('http://igvita.com/a/b/', :remove_trailing_slash => false).should == 'http://igvita.com/a/b/'
     end
 
+    it "should not mangle this real life url" do
+      src_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price|%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
+      expected_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price%7C%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
+
+      n(src_url).should == expected_url
+      n(n(n(n(src_url)))).should == expected_url
+    end
   end
 
   context "canonicalization" do
@@ -242,6 +269,14 @@ describe PostRank::URI do
     it "should remove trailing slashes, unless asked not to" do
       c('http://igvita.com/foo/').should == 'http://igvita.com/foo'
       c('http://igvita.com/foo/', :remove_trailing_slash => false).should == 'http://igvita.com/foo/'
+    end
+
+    it "should not mangle this real life url" do
+      src_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price|%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
+      expected_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098%2051439%2040678%2040679&lastFilter=Price%7C%25A310%20to%20%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
+
+      c(src_url).should == expected_url
+      c(c(c(c(src_url)))).should == expected_url
     end
 
     it "should raise an error on invalid characters" do
@@ -412,23 +447,23 @@ describe PostRank::URI do
 
   context 'valid?' do
     it 'marks incomplete URI string as invalid' do
-      PostRank::URI.valid?('/path/page.html').should be_false
+      PostRank::URI.valid?('/path/page.html').should be(false)
     end
 
     it 'marks www.test.c as invalid' do
-      PostRank::URI.valid?('http://www.test.c').should be_false
+      PostRank::URI.valid?('http://www.test.c').should be(false)
     end
 
     it 'marks www.test.com as valid' do
-      PostRank::URI.valid?('http://www.test.com').should be_true
+      PostRank::URI.valid?('http://www.test.com').should be(true)
     end
 
     it 'marks Unicode domain as valid (NOTE: works only with a scheme)' do
-      PostRank::URI.valid?('http://президент.рф').should be_true
+      PostRank::URI.valid?('http://президент.рф').should be(true)
     end
 
     it 'marks punycode domain domain as valid' do
-      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be_true
+      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be(true)
     end
   end
 end
