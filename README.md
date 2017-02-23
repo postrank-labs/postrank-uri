@@ -38,3 +38,28 @@ In a nutshell, we need to make sure that creative cases like the ones below all 
 As part of URI canonicalization the library will remove common tracking parameters from Google Analytics and several other providers. Beyond that, host-specific rules are also applied. For example, nytimes.com likes to add a 'partner' query parameter for tracking purposes, but which has no effect on the content - hence, it is removed from the URI. For full list, see the c14n.yml file.
 
 Detecting "duplicate URLs" is a hard problem to solve (expensive in all senses), instead we are compiling a manually assembled database. If you find cases which are missing, please do report them, or send us a pull request!
+
+## Development
+
+### Setup
+
+```
+bundle install
+```
+
+### Running tests
+
+```
+bundle exec rake
+```
+
+### Running dependency appraisals
+
+To verify `postrake-uri` works with different versions of its runtime dependencies you can run:
+
+```
+bundle exec appraisal install
+bundle exec rake appraisal
+```
+
+This will execute the test suite with different versions of the dependencies.
