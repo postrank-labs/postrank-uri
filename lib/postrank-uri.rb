@@ -9,7 +9,7 @@ module Addressable
   class URI
     def domain
       host = self.host
-      (host && PublicSuffix.valid?(host)) ? PublicSuffix.parse(host).domain : nil
+      (host && PublicSuffix.valid?(host, default_rule: nil)) ? PublicSuffix.parse(host).domain : nil
     end
 
     def normalized_query
@@ -97,7 +97,7 @@ module PostRank
       urls = []
       text.to_s.scan(URIREGEX[:valid_url]) do |all, before, url, protocol, domain, path, query|
         # Only extract the URL if the domain is valid
-        if PublicSuffix.valid?(domain)
+        if PublicSuffix.valid?(domain, default_rule: nil)
           url = clean(url)
           urls.push url.to_s
         end
@@ -225,7 +225,7 @@ module PostRank
       cleaned_uri = clean(uri, :raw => true)
 
       if host = cleaned_uri.host
-        is_valid = PublicSuffix.valid?(Addressable::IDNA.to_unicode(host))
+        is_valid = PublicSuffix.valid?(Addressable::IDNA.to_unicode(host), default_rule: nil)
       end
 
       is_valid
