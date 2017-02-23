@@ -350,23 +350,23 @@ describe PostRank::URI do
 
   context 'valid?' do
     it 'marks incomplete URI string as invalid' do
-      PostRank::URI.valid?('/path/page.html').should be_false
+      PostRank::URI.valid?('/path/page.html').should be false
     end
 
     it 'marks www.test.c as invalid' do
-      PostRank::URI.valid?('http://www.test.c').should be_false
+      PostRank::URI.valid?('http://www.test.c').should be false
     end
 
     it 'marks www.test.com as valid' do
-      PostRank::URI.valid?('http://www.test.com').should be_true
+      PostRank::URI.valid?('http://www.test.com').should be true
     end
 
     it 'marks Unicode domain as valid (NOTE: works only with a scheme)' do
-      PostRank::URI.valid?('http://президент.рф').should be_true
+      PostRank::URI.valid?('http://президент.рф').should be true
     end
 
     it 'marks punycode domain domain as valid' do
-      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be_true
+      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be true
     end
   end
 end
