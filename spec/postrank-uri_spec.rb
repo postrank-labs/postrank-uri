@@ -193,6 +193,18 @@ describe PostRank::URI do
         c(orig).should == clean
       end
     end
+
+    context "reserved characters" do
+      it "preserves encoded question marks in the path" do
+        c('http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_%28U.S._TV_series%29').
+          should == 'http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_(U.S._TV_series)'
+      end
+
+      it "preserves multiple question marks in the path" do
+        c('http://example.com/so-quizical%3F%3F%3F?foo=bar').
+          should == 'http://example.com/so-quizical%3F%3F%3F?foo=bar'
+      end
+    end
   end
 
   context "hash" do
