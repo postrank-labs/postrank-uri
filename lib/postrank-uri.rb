@@ -86,7 +86,7 @@ module PostRank
           )
         }iox;
 
-    URIREGEX[:encoded_question_mark] = '%3F'
+    URIREGEX[:reserved_characters] = /%3F|%26/i
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
     URIREGEX[:unescape] = /(%[0-9a-fA-F]{2})/x
     URIREGEX.each_pair{|k,v| v.freeze }
@@ -132,11 +132,11 @@ module PostRank
     def unescape(uri)
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
-      u.to_s.gsub(URIREGEX[:unescape]) do |match|
-        if match == URIREGEX[:encoded_question_mark]
-          match
+      u.to_s.gsub(URIREGEX[:unescape]) do |encoded|
+        if encoded.match? URIREGEX[:reserved_characters]
+          encoded
         else
-          [match.delete('%')].pack('H*')
+          [encoded.delete('%')].pack('H*')
         end
       end
     end
