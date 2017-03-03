@@ -3,103 +3,101 @@
 require 'helper'
 
 describe PostRank::URI do
-
-  let(:igvita) { 'http://igvita.com/' }
-
   context "escaping" do
     it "should escape PostRank::URI string" do
-      PostRank::URI.escape('id=1').should == 'id%3D1'
+      expect(PostRank::URI.escape('id=1')).to eq('id%3D1')
     end
 
     it "should escape spaces as %20's" do
-      PostRank::URI.escape('id= 1').should match('%20')
+      expect(PostRank::URI.escape('id= 1')).to match('%20')
     end
   end
 
   context "unescape" do
     it "should unescape PostRank::URI" do
-      PostRank::URI.unescape(PostRank::URI.escape('id=1')).should == 'id=1'
+      expect(PostRank::URI.unescape(PostRank::URI.escape('id=1'))).to eq('id=1')
     end
 
     it "should unescape PostRank::URI with spaces" do
-      PostRank::URI.unescape(PostRank::URI.escape('id= 1')).should == 'id= 1'
+      expect(PostRank::URI.unescape(PostRank::URI.escape('id= 1'))).to eq('id= 1')
     end
 
     context "accept improperly escaped PostRank::URI strings" do
       # See http://tools.ietf.org/html/rfc3986#section-2.3
 
       it "should unescape PostRank::URI with spaces encoded as '+'" do
-        PostRank::URI.unescape('?id=+1').should == '?id= 1'
+        expect(PostRank::URI.unescape('?id=+1')).to eq('?id= 1')
       end
 
       it "should unescape PostRank::URI with spaces encoded as '+'" do
-        PostRank::URI.unescape('?id%3D+1').should == '?id= 1'
+        expect(PostRank::URI.unescape('?id%3D+1')).to eq('?id= 1')
       end
 
       it "should unescape PostRank::URI with spaces encoded as %20" do
-        PostRank::URI.unescape('?id=%201').should == '?id= 1'
+        expect(PostRank::URI.unescape('?id=%201')).to eq('?id= 1')
       end
 
       it "should not unescape '+' to spaces in paths" do
-        PostRank::URI.unescape('/foo+bar?id=foo+bar').should == '/foo+bar?id=foo bar'
+        expect(PostRank::URI.unescape('/foo+bar?id=foo+bar')).to eq('/foo+bar?id=foo bar')
       end
     end
 
   end
 
   context "normalize" do
+    let(:igvita) { 'http://igvita.com/' }
+
     def n(uri)
       PostRank::URI.normalize(uri).to_s
     end
 
     it "should normalize paths in PostRank::URIs" do
-      n('http://igvita.com/').should == igvita
-      n('http://igvita.com').to_s.should == igvita
-      n('http://igvita.com///').should == igvita
+      expect(n('http://igvita.com/')).to eq(igvita)
+      expect(n('http://igvita.com').to_s).to eq(igvita)
+      expect(n('http://igvita.com///')).to eq(igvita)
 
-      n('http://igvita.com/../').should == igvita
-      n('http://igvita.com/a/b/../../').should == igvita
-      n('http://igvita.com/a/b/../..').should == igvita
+      expect(n('http://igvita.com/../')).to eq(igvita)
+      expect(n('http://igvita.com/a/b/../../')).to eq(igvita)
+      expect(n('http://igvita.com/a/b/../..')).to eq(igvita)
     end
 
     it "should normalize query strings in PostRank::URIs" do
-      n('http://igvita.com/?').should == igvita
-      n('http://igvita.com?').should == igvita
-      n('http://igvita.com/a/../?').should == igvita
+      expect(n('http://igvita.com/?')).to eq(igvita)
+      expect(n('http://igvita.com?')).to eq(igvita)
+      expect(n('http://igvita.com/a/../?')).to eq(igvita)
     end
 
     it "should normalize anchors in PostRank::URIs" do
-      n('http://igvita.com#test').should == igvita
-      n('http://igvita.com#test#test').should == igvita
-      n('http://igvita.com/a/../?#test').should == igvita
+      expect(n('http://igvita.com#test')).to eq(igvita)
+      expect(n('http://igvita.com#test#test')).to eq(igvita)
+      expect(n('http://igvita.com/a/../?#test')).to eq(igvita)
     end
 
     it "should clean whitespace in PostRank::URIs" do
-      n('http://igvita.com/a/../?  ').should == igvita
-      n('http://igvita.com/a/../? #test').should == igvita
-      n('http://igvita.com/ /../').should == igvita
+      expect(n('http://igvita.com/a/../?  ')).to eq(igvita)
+      expect(n('http://igvita.com/a/../? #test')).to eq(igvita)
+      expect(n('http://igvita.com/ /../')).to eq(igvita)
     end
 
     it "should default to http scheme if missing" do
-      n('igvita.com').should == igvita
-      n('https://test.com/').to_s.should == 'https://test.com/'
+      expect(n('igvita.com')).to eq(igvita)
+      expect(n('https://test.com/').to_s).to eq('https://test.com/')
     end
 
     it "should downcase hostname" do
-      n('IGVITA.COM').should == igvita
-      n('IGVITA.COM/ABC').should == (igvita + "ABC")
+      expect(n('IGVITA.COM')).to eq(igvita)
+      expect(n('IGVITA.COM/ABC')).to eq(igvita + "ABC")
     end
 
     it "should remove trailing slash on paths" do
-      n('http://igvita.com/').should == 'http://igvita.com/'
+      expect(n('http://igvita.com/')).to eq('http://igvita.com/')
 
-      n('http://igvita.com/a').should == 'http://igvita.com/a'
-      n('http://igvita.com/a/').should == 'http://igvita.com/a'
+      expect(n('http://igvita.com/a')).to eq('http://igvita.com/a')
+      expect(n('http://igvita.com/a/')).to eq('http://igvita.com/a')
 
-      n('http://igvita.com/a/b').should == 'http://igvita.com/a/b'
-      n('http://igvita.com/a/b/').should == 'http://igvita.com/a/b'
+      expect(n('http://igvita.com/a/b')).to eq('http://igvita.com/a/b')
+      expect(n('http://igvita.com/a/b/')).to eq('http://igvita.com/a/b')
     end
-
   end
 
   context "canonicalization" do
@@ -109,60 +107,60 @@ describe PostRank::URI do
 
     context "query parameters" do
       it "should handle nester parameters" do
-        c('igvita.com/?id=a&utm_source=a').should == 'http://igvita.com/?id=a'
+        expect(c('igvita.com/?id=a&utm_source=a')).to eq('http://igvita.com/?id=a')
       end
 
       it "should preserve order of parameters" do
         url = 'http://a.com/?'+('a'..'z').to_a.shuffle.map {|e| "#{e}=#{e}"}.join("&")
-        c(url).should == url
+        expect(c(url)).to eq(url)
       end
 
       it "should remove Google Analytics parameters" do
-        c('igvita.com/?id=a&utm_source=a').should == 'http://igvita.com/?id=a'
-        c('igvita.com/?id=a&utm_source=a&utm_valid').should == 'http://igvita.com/?id=a&utm_valid'
+        expect(c('igvita.com/?id=a&utm_source=a')).to eq('http://igvita.com/?id=a')
+        expect(c('igvita.com/?id=a&utm_source=a&utm_valid')).to eq('http://igvita.com/?id=a&utm_valid')
       end
 
       it "should remove awesm/sms parameters" do
-        c('igvita.com/?id=a&utm_source=a&awesm=b').should == 'http://igvita.com/?id=a'
-        c('igvita.com/?id=a&sms_ss=a').should == 'http://igvita.com/?id=a'
+        expect(c('igvita.com/?id=a&utm_source=a&awesm=b')).to eq('http://igvita.com/?id=a')
+        expect(c('igvita.com/?id=a&sms_ss=a')).to eq('http://igvita.com/?id=a')
       end
 
       it "should remove PHPSESSID parameter" do
-        c('http://www.nachi.org/forum?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?'
-        c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum/?'
-        c('http://www.nachi.org/forum?id=123&PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?id=123'
+        expect(c('http://www.nachi.org/forum?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd')).to eq('http://www.nachi.org/forum?')
+        expect(c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd')).to eq('http://www.nachi.org/forum/?')
+        expect(c('http://www.nachi.org/forum?id=123&PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd')).to eq('http://www.nachi.org/forum?id=123')
       end
     end
 
     context "hashbang" do
       it "should rewrite twitter links to crawlable versions" do
-        c('http://twitter.com/#!/igrigorik').should == 'http://twitter.com/igrigorik'
-        c('http://twitter.com/#!/a/statuses/1').should == 'http://twitter.com/a/statuses/1'
-        c('http://nontwitter.com/#!/a/statuses/1').should == 'http://nontwitter.com/#!/a/statuses/1'
+        expect(c('http://twitter.com/#!/igrigorik')).to eq('http://twitter.com/igrigorik')
+        expect(c('http://twitter.com/#!/a/statuses/1')).to eq('http://twitter.com/a/statuses/1')
+        expect(c('http://nontwitter.com/#!/a/statuses/1')).to eq('http://nontwitter.com/#!/a/statuses/1')
       end
     end
 
     context "tumblr" do
       it "should strip slug" do
-        c('http://test.tumblr.com/post/4533459403/some-text').should == 'http://test.tumblr.com/post/4533459403/'
-        c('http://tumblr.com/xjl2evo3hh').should == 'http://tumblr.com/xjl2evo3hh'
+        expect(c('http://test.tumblr.com/post/4533459403/some-text')).to eq('http://test.tumblr.com/post/4533459403/')
+        expect(c('http://tumblr.com/xjl2evo3hh')).to eq('http://tumblr.com/xjl2evo3hh')
       end
     end
 
     context "embedded links" do
       it "should extract embedded redirects from Google News" do
         u = c('http://news.google.com/news/url?sa=t&fd=R&&url=http://www.ctv.ca/CTVNews/Politics/20110111/')
-        u.should == 'http://www.ctv.ca/CTVNews/Politics/20110111'
+        expect(u).to eq('http://www.ctv.ca/CTVNews/Politics/20110111')
       end
 
       it "should extract embedded redirects from xfruits.com" do
         u = c('http://xfruits.com/MrGroar/?url=http%3A%2F%2Faap.lesroyaumes.com%2Fdepeches%2Fdepeche351820908.html')
-        u.should == 'http://aap.lesroyaumes.com/depeches/depeche351820908.html'
+        expect(u).to eq('http://aap.lesroyaumes.com/depeches/depeche351820908.html')
       end
 
       it "should extract embedded redirects from MySpace" do
         u = c('http://www.myspace.com/Modules/PostTo/Pages/?u=http%3A%2F%2Fghanaian-chronicle.com%2Fnews%2Fother-news%2Fcanadian-high-commissioner-urges-media%2F&t=Canadian%20High%20Commissioner%20urges%20media')
-        u.should == 'http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media'
+        expect(u).to eq('http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media')
       end
     end
   end
@@ -173,41 +171,41 @@ describe PostRank::URI do
     end
 
     it "should unescape, c14n and normalize" do
-      c('http://igvita.com/?id=1').should == 'http://igvita.com/?id=1'
-      c('igvita.com/?id=1').should == 'http://igvita.com/?id=1'
+      expect(c('http://igvita.com/?id=1')).to eq('http://igvita.com/?id=1')
+      expect(c('igvita.com/?id=1')).to eq('http://igvita.com/?id=1')
 
-      c('http://igvita.com/?id= 1').should == 'http://igvita.com/?id=%201'
-      c('http://igvita.com/?id=+1').should == 'http://igvita.com/?id=%201'
-      c('http://igvita.com/?id%3D%201').should == 'http://igvita.com/?id=%201'
+      expect(c('http://igvita.com/?id= 1')).to eq('http://igvita.com/?id=%201')
+      expect(c('http://igvita.com/?id=+1')).to eq('http://igvita.com/?id=%201')
+      expect(c('http://igvita.com/?id%3D%201')).to eq('http://igvita.com/?id=%201')
 
-      c('igvita.com/a/..?id=1&utm_source=a&awesm=b#c').should == 'http://igvita.com/?id=1'
+      expect(c('igvita.com/a/..?id=1&utm_source=a&awesm=b#c')).to eq('http://igvita.com/?id=1')
 
-      c('igvita.com?id=<>').should == 'http://igvita.com/?id=%3C%3E'
-      c('igvita.com?id="').should == 'http://igvita.com/?id=%22'
+      expect(c('igvita.com?id=<>')).to eq('http://igvita.com/?id=%3C%3E')
+      expect(c('igvita.com?id="')).to eq('http://igvita.com/?id=%22')
 
-      c('test.tumblr.com/post/23223/text-stub').should == 'http://test.tumblr.com/post/23223'
+      expect(c('test.tumblr.com/post/23223/text-stub')).to eq('http://test.tumblr.com/post/23223')
     end
 
     it "should clean host specific parameters" do
       YAML.load_file('spec/c14n_hosts.yml').each do |orig, clean|
-        c(orig).should == clean
+        expect(c(orig)).to eq(clean)
       end
     end
 
     context "reserved characters" do
       it "preserves encoded question marks" do
-        c('http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_%28U.S._TV_series%29').
-          should == 'http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_(U.S._TV_series)'
+        expect(c('http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_%28U.S._TV_series%29')).
+          to eq('http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_(U.S._TV_series)')
       end
 
       it "preserves encoded ampersands" do
-        c('http://example.com/?foo=BAR%26BAZ').
-          should == 'http://example.com/?foo=BAR%26BAZ'
+        expect(c('http://example.com/?foo=BAR%26BAZ')).
+          to eq('http://example.com/?foo=BAR%26BAZ')
       end
 
       it "preserves consecutive reserved characters" do
-        c('http://example.com/so-quizical%3F%3F%3F?foo=bar').
-          should == 'http://example.com/so-quizical%3F%3F%3F?foo=bar'
+        expect(c('http://example.com/so-quizical%3F%3F%3F?foo=bar')).
+          to eq('http://example.com/so-quizical%3F%3F%3F?foo=bar')
       end
     end
   end
@@ -220,17 +218,17 @@ describe PostRank::URI do
     it "should compute the MD5 hash without cleaning the URI" do
       hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://everburning.com/feed/post/1').should == hash
-      h('everburning.com/feed/post/1').should_not == hash
+      expect(h('http://everburning.com/feed/post/1')).to eq(hash)
+      expect(h('everburning.com/feed/post/1')).not_to eq(hash)
     end
 
     it "should normalize the URI if requested and compute MD5 hash" do
       hash = '55fae8910d312b7878a3201ed653b881'
 
-      h('http://EverBurning.Com/feed/post/1', :clean => true).should == hash
-      h('Everburning.com/feed/post/1', :clean => true).should == hash
-      h('everburning.com/feed/post/1', :clean => true).should == hash
-      h('everburning.com/feed/post/1/', :clean => true).should == hash
+      expect(h('http://EverBurning.Com/feed/post/1', :clean => true)).to eq(hash)
+      expect(h('Everburning.com/feed/post/1', :clean => true)).to eq(hash)
+      expect(h('everburning.com/feed/post/1', :clean => true)).to eq(hash)
+      expect(h('everburning.com/feed/post/1/', :clean => true)).to eq(hash)
     end
   end
 
@@ -241,47 +239,47 @@ describe PostRank::URI do
 
     context "TLDs" do
       it "should not pick up bad grammar as a domain name and think it has a link" do
-        e("yah.lets").should be_empty
+        expect(e("yah.lets")).to be_empty
       end
 
       it "should not pickup bad TLDS" do
-        e('stuff.zz a.b.c d.zq').should be_empty
+        expect(e('stuff.zz a.b.c d.zq')).to be_empty
       end
     end
 
     it "should extract twitter links with hashbangs" do
-      e('test http://twitter.com/#!/igrigorik').should include('http://twitter.com/igrigorik')
+      expect(e('test http://twitter.com/#!/igrigorik')).to include('http://twitter.com/igrigorik')
     end
 
     it "should extract mobile twitter links with hashbangs" do
-      e('test http://mobile.twitter.com/#!/_mm6').should include('http://mobile.twitter.com/_mm6')
+      expect(e('test http://mobile.twitter.com/#!/_mm6')).to include('http://mobile.twitter.com/_mm6')
     end
 
     it "should handle a URL that comes after text without a space" do
-      e("text:http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
-      e("text;http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
-      e("text.http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
-      e("text-http://spn.tw/tfnLT").should include("http://spn.tw/tfnLT")
+      expect(e("text:http://spn.tw/tfnLT")).to include("http://spn.tw/tfnLT")
+      expect(e("text;http://spn.tw/tfnLT")).to include("http://spn.tw/tfnLT")
+      expect(e("text.http://spn.tw/tfnLT")).to include("http://spn.tw/tfnLT")
+      expect(e("text-http://spn.tw/tfnLT")).to include("http://spn.tw/tfnLT")
     end
 
     it "should not pick up anything on or after the first . in the path of a URL with a shortener domain" do
-      e("http://bit.ly/9cJ2mz......if ur pickin up anythign here, u FAIL.").should == ["http://bit.ly/9cJ2mz"]
+      expect(e("http://bit.ly/9cJ2mz......if ur pickin up anythign here, u FAIL.")).to eq(["http://bit.ly/9cJ2mz"])
     end
 
     it "should pickup urls without protocol" do
       u = e('abc.com abc.co')
-      u.should include('http://abc.com/')
-      u.should include('http://abc.co/')
+      expect(u).to include('http://abc.com/')
+      expect(u).to include('http://abc.co/')
     end
 
     it "should pickup urls inside tags" do
       u = e("<a href='http://bit.ly/3fds3'>abc.com</a>")
-      u.should include('http://abc.com/')
+      expect(u).to include('http://abc.com/')
     end
 
     context "multibyte characters" do
       it "should stop extracting URLs at the full-width CJK space character" do
-        e("http://www.youtube.com/watch?v=w_j4Lda25jA　　とんかつ定食").should == ["http://www.youtube.com/watch?v=w_j4Lda25jA"]
+        expect(e("http://www.youtube.com/watch?v=w_j4Lda25jA　　とんかつ定食")).to eq(["http://www.youtube.com/watch?v=w_j4Lda25jA"])
       end
     end
 
@@ -291,30 +289,30 @@ describe PostRank::URI do
     it "should extract links from html text" do
       g,b = PostRank::URI.extract_href("<a href='google.com'>link to google</a> with text <a href='b.com'>stuff</a>")
 
-      g.first.should == 'http://google.com/'
-      b.first.should == 'http://b.com/'
+      expect(g.first).to eq('http://google.com/')
+      expect(b.first).to eq('http://b.com/')
 
-      g.last.should == 'link to google'
-      b.last.should == 'stuff'
+      expect(g.last).to eq('link to google')
+      expect(b.last).to eq('stuff')
     end
 
     it "should handle empty hrefs" do
-      lambda do
+      expect do
         l = PostRank::URI.extract_href("<a>link to google</a> with text <a href=''>stuff</a>")
-        l.should be_empty
-      end.should_not raise_error
+        expect(l).to be_empty
+      end.not_to raise_error
     end
 
     context "relative paths" do
       it "should reject relative paths" do
         l = PostRank::URI.extract_href("<a href='/stuff'>link to stuff</a>")
-        l.should be_empty
+        expect(l).to be_empty
       end
 
       it "should resolve relative paths if host is provided" do
         i = PostRank::URI.extract_href("<a href='/stuff'>link to stuff</a>", "igvita.com").first
-        i.first.should == 'http://igvita.com/stuff'
-        i.last.should == 'link to stuff'
+        expect(i.first).to eq('http://igvita.com/stuff')
+        expect(i.last).to eq('link to stuff')
       end
     end
 
@@ -341,7 +339,7 @@ describe PostRank::URI do
       url_list.each_pair do |url, expected_result|
         it "should extract #{expected_result.inspect} from #{url}" do
           u = PostRank::URI.clean(url, :raw => true)
-          u.domain.should == expected_result
+          expect(u.domain).to eq(expected_result)
         end
       end
     end
@@ -349,41 +347,41 @@ describe PostRank::URI do
 
   context "parse" do
     it 'should not fail on large host-part look-alikes' do
-      PostRank::URI.parse('a'*64+'.ca').host.should == nil
+      expect(PostRank::URI.parse('a'*64+'.ca').host).to eq(nil)
     end
 
     it 'should not pancake javascript scheme URIs' do
-      PostRank::URI.parse('javascript:void(0);').scheme.should == 'javascript'
+      expect(PostRank::URI.parse('javascript:void(0);').scheme).to eq('javascript')
     end
 
     it 'should not pancake mailto scheme URIs' do
-      PostRank::URI.parse('mailto:void(0);').scheme.should == 'mailto'
+      expect(PostRank::URI.parse('mailto:void(0);').scheme).to eq('mailto')
     end
 
     it 'should not pancake xmpp scheme URIs' do
-      PostRank::URI.parse('xmpp:void(0);').scheme.should == 'xmpp'
+      expect(PostRank::URI.parse('xmpp:void(0);').scheme).to eq('xmpp')
     end
   end
 
   context 'valid?' do
     it 'marks incomplete URI string as invalid' do
-      PostRank::URI.valid?('/path/page.html').should be false
+      expect(PostRank::URI.valid?('/path/page.html')).to be false
     end
 
     it 'marks www.test.c as invalid' do
-      PostRank::URI.valid?('http://www.test.c').should be false
+      expect(PostRank::URI.valid?('http://www.test.c')).to be false
     end
 
     it 'marks www.test.com as valid' do
-      PostRank::URI.valid?('http://www.test.com').should be true
+      expect(PostRank::URI.valid?('http://www.test.com')).to be true
     end
 
     it 'marks Unicode domain as valid (NOTE: works only with a scheme)' do
-      PostRank::URI.valid?('http://президент.рф').should be true
+      expect(PostRank::URI.valid?('http://президент.рф')).to be true
     end
 
     it 'marks punycode domain domain as valid' do
-      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be true
+      expect(PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai')).to be true
     end
   end
 end
