@@ -117,6 +117,10 @@ describe PostRank::URI do
         c(url).should == url
       end
 
+      it "should remove ? if no more parameters left after cleaning up the URL" do
+        c("http://foo.com/bar?utm_source=a").should == "http://foo.com/bar"
+      end
+
       it "should remove Google Analytics parameters" do
         c('igvita.com/?id=a&utm_source=a').should == 'http://igvita.com/?id=a'
         c('igvita.com/?id=a&utm_source=a&utm_valid').should == 'http://igvita.com/?id=a&utm_valid'
@@ -128,8 +132,8 @@ describe PostRank::URI do
       end
 
       it "should remove PHPSESSID parameter" do
-        c('http://www.nachi.org/forum?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?'
-        c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum/?'
+        c('http://www.nachi.org/forum?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum'
+        c('http://www.nachi.org/forum/?PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum/'
         c('http://www.nachi.org/forum?id=123&PHPSESSID=9ee2fb10b7274ef2b15d1d4006b8c8dd').should == 'http://www.nachi.org/forum?id=123'
       end
     end

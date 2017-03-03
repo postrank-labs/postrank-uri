@@ -167,7 +167,7 @@ module PostRank
         q.delete_if { |k,v| C14N[:global].include?(k) }
         q.delete_if { |k,v| C14N[:hosts].find {|r,p| u.host =~ r && p.include?(k) } }
       end
-      u.query_values = q
+      u.query_values = (q && q.any?) ? q : nil
 
       if u.host =~ /^(mobile\.)?twitter\.com$/ && u.fragment && u.fragment.match(/^!(.*)/)
         u.fragment = nil
