@@ -195,12 +195,17 @@ describe PostRank::URI do
     end
 
     context "reserved characters" do
-      it "preserves encoded question marks in the path" do
+      it "preserves encoded question marks" do
         c('http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_%28U.S._TV_series%29').
           should == 'http://en.wikipedia.org/wiki/Whose_Line_Is_It_Anyway%3F_(U.S._TV_series)'
       end
 
-      it "preserves multiple question marks in the path" do
+      it "preserves encoded ampersands" do
+        c('http://example.com/?foo=BAR%26BAZ').
+          should == 'http://example.com/?foo=BAR%26BAZ'
+      end
+
+      it "preserves consecutive reserved characters" do
         c('http://example.com/so-quizical%3F%3F%3F?foo=bar').
           should == 'http://example.com/so-quizical%3F%3F%3F?foo=bar'
       end
