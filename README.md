@@ -1,5 +1,7 @@
 # PostRank URI
 
+[![Gem Version](https://badge.fury.io/rb/postrank-uri.svg)](https://rubygems.org/gems/postrank-uri) [![Build Status](https://travis-ci.org/postrank-labs/postrank-uri.svg?branch=master)](https://travis-ci.org/postrank-labs/postrank-uri)
+
 A collection of convenience methods (Ruby 1.8 & Ruby 1.9) for dealing with extracting, (un)escaping, normalization, and canonicalization of URIs. At PostRank we process over 20M URI associated activities each day, and we need to make sure that we can reliably extract the URIs from a variety of text formats, deal with all the numerous and creative ways users like to escape and unescape their URIs, normalize the resulting URIs, and finally apply a set of custom canonicalization rules to make sure that we can cross-reference when the users are talking about the same URL.
 
 In a nutshell, we need to make sure that creative cases like the ones below all resolve to same URI:
