@@ -133,7 +133,7 @@ module PostRank
       u = parse(uri)
       u.query = u.query.tr('+', ' ') if u.query
       u.to_s.gsub(URIREGEX[:unescape]) do |encoded|
-        if encoded.match? URIREGEX[:reserved_characters]
+        if !encoded.match(URIREGEX[:reserved_characters]).nil?
           encoded
         else
           [encoded.delete('%')].pack('H*')
