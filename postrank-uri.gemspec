@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "addressable",   "~> 2.3.0"
   s.add_dependency "public_suffix", "~> 1.5.3"
-  s.add_dependency "nokogiri",      "~> 1.6.1"
+  s.add_dependency "nokogiri",      "~> 1.7.1"
 
   s.add_development_dependency "rspec", "~> 2.99.0"
 
