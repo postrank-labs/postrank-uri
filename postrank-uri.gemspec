@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = "URI normalization, c14n, escaping, and extraction"
   s.description = s.summary
   s.license     = 'MIT'
+  s.required_ruby_version  = ">= 2.0.0"
 
   s.rubyforge_project = "postrank-uri"
 
