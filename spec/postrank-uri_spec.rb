@@ -239,6 +239,10 @@ describe PostRank::URI do
         u = c('http://www.myspace.com/Modules/PostTo/Pages/?u=http%3A%2F%2Fghanaian-chronicle.com%2Fnews%2Fother-news%2Fcanadian-high-commissioner-urges-media%2F&t=Canadian%20High%20Commissioner%20urges%20media')
         u.should == 'http://ghanaian-chronicle.com/news/other-news/canadian-high-commissioner-urges-media'
       end
+
+      it "should not error on empty query values" do
+        expect { c('http://xfruits.com/trabucojon/') }.to_not raise_exception
+      end
     end
   end
 

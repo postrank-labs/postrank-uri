@@ -210,9 +210,9 @@ module PostRank
 
     def embedded(uri)
       embedded = if uri.host == 'news.google.com' && uri.path == '/news/url' \
-         || uri.host == 'xfruits.com'
-        uri.query_values['url']
-
+          || uri.host == 'xfruits.com'
+        query_values = uri.query_values
+        query_values && query_values['url']
       elsif uri.host =~ /myspace\.com/ && uri.path =~ /PostTo/
         embedded = uri.query_values['u']
       end
