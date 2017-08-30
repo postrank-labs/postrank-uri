@@ -214,7 +214,8 @@ module PostRank
         query_values = uri.query_values
         query_values && query_values['url']
       elsif uri.host =~ /myspace\.com/ && uri.path =~ /PostTo/
-        embedded = uri.query_values['u']
+        query_values = uri.query_values
+        query_values && query_values['u']
       end
 
       uri = clean(embedded, :raw => true) if embedded
