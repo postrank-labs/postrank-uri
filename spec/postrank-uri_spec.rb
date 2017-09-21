@@ -53,17 +53,17 @@ describe PostRank::URI do
 
     it "should handle hex and utf-8 encoding in same url" do
       uri = Addressable::URI.parse("%C2%A9_\u{00A1}")
-      PostRank::URI.unescape(uri).should == "©_¡"
+      expect(PostRank::URI.unescape(uri)).to eq ("©_¡")
     end
 
     it "handles reserved chars next to unreserved and encoded chars" do
       uri = Addressable::URI.parse("http://example.com/%7C%25")
-      PostRank::URI.unescape(uri).should == "http://example.com/|%"
+      expect(PostRank::URI.unescape(uri)).to eq ("http://example.com/|%")
     end
 
     it "doesn't break on fancy UTF-8 characters" do
       uri = Addressable::URI.parse("http://example.com/someregulartext%25💀%25🍻%25")
-      PostRank::URI.unescape(uri).should == "http://example.com/someregulartext%💀%🍻%"
+      expect(PostRank::URI.unescape(uri)).to eq ("http://example.com/someregulartext%💀%🍻%")
     end
   end
 
@@ -73,30 +73,30 @@ describe PostRank::URI do
     end
 
     it "should not unescape reserved characters" do
-      uu("example.com/what%3F").should == "http://example.com/what%3F"
+      expect(uu("example.com/what%3F")).to eq ("http://example.com/what%3F")
     end
 
     it "should unescape unreserved characters" do
-      uu("example.com/some%20thing").should == "http://example.com/some thing"
+      expect(uu("example.com/some%20thing")).to eq ("http://example.com/some thing")
     end
 
     it "should not unescape percents" do
-      uu("example.com/work%20110%25").should == "http://example.com/work 110%25"
+      expect(uu("example.com/work%20110%25")).to eq ("http://example.com/work 110%25")
     end
 
     it "should handle hex and utf-8 encoding in same url" do
       uri = Addressable::URI.parse("http://example.com/%C2%A9_\u{00A1}")
-      uu(uri).should == "http://example.com/©_¡"
+      expect(uu(uri)).to eq ("http://example.com/©_¡")
     end
 
     it "handles reserved chars next to unreserved and encoded chars" do
       uri = Addressable::URI.parse("http://example.com/%7C%25")
-      uu(uri).should == "http://example.com/|%25"
+      expect(uu(uri)).to eq ("http://example.com/|%25")
     end
 
     it "doesn't break on fancy UTF-8 characters" do
       uri = Addressable::URI.parse("http://example.com/someregulartext%25💀%25🍻%25")
-      uu(uri).should == "http://example.com/someregulartext%25💀%25🍻%25"
+      expect(uu(uri)).to eq ("http://example.com/someregulartext%25💀%25🍻%25")
     end
   end
 
@@ -154,21 +154,21 @@ describe PostRank::URI do
     end
 
     it "should not remove trailing slash on paths if asked not to" do
-      n('http://igvita.com/', :remove_trailing_slash => false).should == 'http://igvita.com/'
+      expect(n('http://igvita.com/', :remove_trailing_slash => false)).to eq('http://igvita.com/')
 
-      n('http://igvita.com/a', :remove_trailing_slash => false).should == 'http://igvita.com/a'
-      n('http://igvita.com/a/', :remove_trailing_slash => false).should == 'http://igvita.com/a/'
+      expect(n('http://igvita.com/a', :remove_trailing_slash => false)).to eq('http://igvita.com/a')
+      expect(n('http://igvita.com/a/', :remove_trailing_slash => false)).to eq('http://igvita.com/a/')
 
-      n('http://igvita.com/a/b', :remove_trailing_slash => false).should == 'http://igvita.com/a/b'
-      n('http://igvita.com/a/b/', :remove_trailing_slash => false).should == 'http://igvita.com/a/b/'
+      expect(n('http://igvita.com/a/b', :remove_trailing_slash => false)).to eq('http://igvita.com/a/b')
+      expect(n('http://igvita.com/a/b/', :remove_trailing_slash => false)).to eq('http://igvita.com/a/b/')
     end
 
     it "should not mangle this real life url" do
       src_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price|%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
       expected_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price%7C%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
 
-      n(src_url).should == expected_url
-      n(n(n(n(src_url)))).should == expected_url
+      expect(n(src_url)).to eq(expected_url)
+      expect(n(n(n(n(src_url))))).to eq(expected_url)
     end
   end
 
@@ -204,8 +204,8 @@ describe PostRank::URI do
       end
 
       it "should remove jsessionid parameter" do
-        c('http://foo.org/bar/;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye').should == 'http://foo.org/bar/'
-        c('http://foo.org/bar/?baz=1;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye').should == 'http://foo.org/bar/?baz=1'
+        expect(c('http://foo.org/bar/;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye')).to eq ('http://foo.org/bar/')
+        expect(c('http://foo.org/bar/?baz=1;jsessionid=CFF4F98856B808B7D643F56D3EEE95BE.juno_qa_fye')).to eq ('http://foo.org/bar/?baz=1')
       end
     end
 
@@ -264,23 +264,23 @@ describe PostRank::URI do
       c('igvita.com?id=<>').should == 'http://igvita.com/?id=%3C%3E'
       c('igvita.com?id="').should == 'http://igvita.com/?id=%22'
 
-      c('test.tumblr.com/post/23223/text-stub').should == 'http://test.tumblr.com/post/23223'
+      expect(c('test.tumblr.com/post/23223/text-stub')).to eq ('http://test.tumblr.com/post/23223')
 
-      c('example.com/do_you_%23yolo%3F').should == 'http://example.com/do_you_%23yolo%3F'
-      c('example.com/search?q=%23fomo&limit=50#entry-1').should == 'http://example.com/search?q=%23fomo&limit=50'
+      expect(c('example.com/do_you_%23yolo%3F')).to eq ('http://example.com/do_you_%23yolo%3F')
+      expect(c('example.com/search?q=%23fomo&limit=50#entry-1')).to eq ('http://example.com/search?q=%23fomo&limit=50')
     end
 
     it "should remove trailing slashes, unless asked not to" do
-      c('http://igvita.com/foo/').should == 'http://igvita.com/foo'
-      c('http://igvita.com/foo/', :remove_trailing_slash => false).should == 'http://igvita.com/foo/'
+      expect(c('http://igvita.com/foo/')).to eq ('http://igvita.com/foo')
+      expect(c('http://igvita.com/foo/', :remove_trailing_slash => false)).to eq ('http://igvita.com/foo/')
     end
 
     it "should not mangle this real life url" do
       src_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098+51439+40678+40679&lastFilter=Price|%25A310+to+%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
       expected_url = 'http://www.tesco.com/direct/gaming/games-bargains/cat13350049.cat?catId=4294890098%2051439%2040678%2040679&lastFilter=Price%7C%25A310%20to%20%C2%A320&icid=ents_flyoutlink_BargainsChartsGames'
 
-      c(src_url).should == expected_url
-      c(c(c(c(src_url)))).should == expected_url
+      expect(c(src_url)).to eq (expected_url)
+      expect(c(c(c(c(src_url))))).to eq (expected_url)
     end
 
     it "should raise an error on invalid characters" do
@@ -451,23 +451,23 @@ describe PostRank::URI do
 
   context 'valid?' do
     it 'marks incomplete URI string as invalid' do
-      PostRank::URI.valid?('/path/page.html').should be(false)
+      expect(PostRank::URI.valid?('/path/page.html')).to be false
     end
 
     it 'marks www.test.c as invalid' do
-      PostRank::URI.valid?('http://www.test.c').should be(false)
+      expect(PostRank::URI.valid?('http://www.test.c')).to be false
     end
 
     it 'marks www.test.com as valid' do
-      PostRank::URI.valid?('http://www.test.com').should be(true)
+      expect(PostRank::URI.valid?('http://www.test.com')).to be true
     end
 
     it 'marks Unicode domain as valid (NOTE: works only with a scheme)' do
-      PostRank::URI.valid?('http://президент.рф').should be(true)
+      expect(PostRank::URI.valid?('http://президент.рф')).to be true
     end
 
     it 'marks punycode domain domain as valid' do
-      PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai').should be(true)
+      expect(PostRank::URI.valid?('xn--d1abbgf6aiiy.xn--p1ai')).to be true
     end
   end
 end
