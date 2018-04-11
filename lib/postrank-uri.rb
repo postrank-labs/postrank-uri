@@ -152,7 +152,7 @@ module PostRank
 
     def normalize(uri, opts = {})
       u = parse(uri, opts)
-      u.path = u.path.squeeze('/')
+      u.path = squeeze_slashes u.path
       u.path = u.path.chomp('/') if u.path.size != 1
       u.query = nil if u.query && u.query.empty?
       u.fragment = nil
@@ -234,6 +234,13 @@ module PostRank
       end
 
       is_valid
+    end
+
+    def squeeze_slashes(path)
+      path = path.squeeze('/')
+      return path unless path =~ (/https?:\/[^\/]/)
+      path = path.gsub(/https:\/+/, 'https://')
+      path.gsub(/http:\/+/, 'http://')
     end
   end
 end
