@@ -89,6 +89,7 @@ module PostRank
     URIREGEX[:reserved_characters] = /%3F|%26/i
     URIREGEX[:escape]   = /([^ a-zA-Z0-9_.-]+)/x
     URIREGEX[:unescape] = /(%[0-9a-fA-F]{2})/x
+    URIREGEX[:double_slash_outside_scheme] = /(?<!http:|https:)\/{2}/x
     URIREGEX.each_pair{|k,v| v.freeze }
 
     module_function
@@ -152,7 +153,7 @@ module PostRank
 
     def normalize(uri, opts = {})
       u = parse(uri, opts)
-      u.path = u.path.squeeze('/')
+      u.path = u.path.gsub(URIREGEX[:double_slash_outside_scheme], '/')
       u.path = u.path.chomp('/') if u.path.size != 1
       u.query = nil if u.query && u.query.empty?
       u.fragment = nil

@@ -98,6 +98,10 @@ describe PostRank::URI do
       expect(n('http://igvita.com/a/b')).to eq('http://igvita.com/a/b')
       expect(n('http://igvita.com/a/b/')).to eq('http://igvita.com/a/b')
     end
+    it 'preserves nested urls' do
+      expect(n('http://igvita.com/a/b/http://hello.com')).to eq('http://igvita.com/a/b/http://hello.com')
+      expect(n('http://igvita.com/a//b/https://hello.com')).to eq('http://igvita.com/a/b/https://hello.com')
+    end
   end
 
   context "canonicalization" do
