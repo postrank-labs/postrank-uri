@@ -1,9 +1,9 @@
-appraise "nokogiri-1.7" do
-  gem "nokogiri", "~> 1.7.0"
-end
+nokogiri_versions = ["1.8", "1.9", "1.10"]
 
-appraise "nokogiri-1.6" do
-  gem "nokogiri", "~> 1.6.1"
+nokogiri_versions.each do |version|
+  appraise "nokogiri-#{version}" do
+    gem "nokogiri", "~> #{version}.0"
+  end
 end
 
 appraise "addressable-2.3" do
