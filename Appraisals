@@ -6,14 +6,10 @@ nokogiri_versions.each do |version|
   end
 end
 
-appraise "addressable-2.3" do
-  gem "addressable", "~> 2.3.0"
-end
+addressable_versions = ["2.4", "2.5", "2.6"]
 
-appraise "addressable-2.4" do
-  gem "addressable", "~> 2.4.0"
-end
-
-appraise "addressable-2.5" do
-  gem "addressable", "~> 2.5.0"
+addressable_versions.each do |version|
+  appraise "addressable-#{version}" do
+    gem "addressable", "~> #{version}.0"
+  end
 end
