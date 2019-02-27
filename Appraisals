@@ -1,19 +1,15 @@
-appraise "nokogiri-1.7" do
-  gem "nokogiri", "~> 1.7.0"
+nokogiri_versions = ["1.8", "1.9", "1.10"]
+
+nokogiri_versions.each do |version|
+  appraise "nokogiri-#{version}" do
+    gem "nokogiri", "~> #{version}.0"
+  end
 end
 
-appraise "nokogiri-1.6" do
-  gem "nokogiri", "~> 1.6.1"
-end
+addressable_versions = ["2.4", "2.5", "2.6"]
 
-appraise "addressable-2.3" do
-  gem "addressable", "~> 2.3.0"
-end
-
-appraise "addressable-2.4" do
-  gem "addressable", "~> 2.4.0"
-end
-
-appraise "addressable-2.5" do
-  gem "addressable", "~> 2.5.0"
+addressable_versions.each do |version|
+  appraise "addressable-#{version}" do
+    gem "addressable", "~> #{version}.0"
+  end
 end
