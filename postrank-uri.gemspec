@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  if spec.respond_to?(:metadata)
+  if s.respond_to?(:metadata)
     s.metadata['allowed_push_host'] = 'https://artifactory.elstc.co/artifactory/api/gems/swiftype-gems'
   else
     raise "RubyGems 2.0 or newer is required to protect against public gem pushes."
