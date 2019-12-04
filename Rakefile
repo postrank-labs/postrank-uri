@@ -12,8 +12,8 @@ require 'appraisal'
 module Bundler
   class GemHelper
     def rubygem_push(path)
-      sh("gem inabox '#{path}'")
-      Bundler.ui.confirm "Pushed #{name} #{version} to geminabox"
+      sh("gem push --verbose --host https://artifactory.elstc.co/artifactory/api/gems/swiftype-gems --key elastic '#{path}'")
+      Bundler.ui.confirm "Pushed #{name} #{version} to artifactory"
     end
   end
 end
